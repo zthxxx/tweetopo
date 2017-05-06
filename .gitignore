@@ -1,0 +1,14 @@
+.idea/
+__pycache__/
+venv/
+*.pyc
+*.db
+*.bak
+*.ini
+*.conf
+*.sql
+*.wav
+*.log
+*.out
+.project
+.coverage
