@@ -13,7 +13,7 @@ install:
     - pip install -r requirements.txt --timeout 600
 
 script:
-    - packages=""
+    - packages="conffor"
     - python -m nose -vs --with-coverage --cover-package=$packages
 
 after_success:
