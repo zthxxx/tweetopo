@@ -2,22 +2,37 @@ language: python
 dist: trusty
 sudo: required
 
+addons:
+  apt:
+    sources:
+      - mongodb-upstart
+      - mongodb-3.2-precise
+    packages:
+      - mongodb-org-server
+      - mongodb-org-shell
+
+services:
+  - mongodb
+
 python:
-    - "3.5"
+  - "3.5"
 
 before_install:
-    # command in shell script need sudo
-    - source travis_env_init.sh
+  # command in shell script need sudo
+  - source travis_env_init.sh
 
 install:
-    - pip install -r requirements.txt --timeout 600
+  - pip install -r requirements.txt --timeout 600
+
+before_script:
+  - mongo UnitTest --eval 'db.createUser({user:"unit", pwd:"UnitTest", roles:["readWrite"]});'
 
 script:
-    - packages="conffor, database, twitter"
-    - python -m nose -w . -vs --with-coverage --cover-package="$packages"
+  - packages="conffor, database, twitter"
+  - python -m nose -w . -vs --with-coverage --cover-package="$packages"
 
 after_success:
-    coveralls
+  coveralls
 
 notifications:
-    email: true
+  email: true

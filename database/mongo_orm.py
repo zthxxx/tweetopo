@@ -21,6 +21,13 @@ def people_save(name, uid, friends_count, friends):
     except NotUniqueError as e:
         logging.warning([people.uid, people.name, "has exist."])
 
+def people_find(name='', uid=None):
+    query = Person.objects
+    if uid is not None:
+        people = query(uid=uid).first()
+    else:
+        people = query(name=name).first()
+    return people
 
 
 

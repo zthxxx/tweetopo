@@ -7,9 +7,9 @@ class Twitter():
         access_token, access_token_secret,
         proxy=''
     ):
-        self.api = None
-        self.user = None
-        self.config = {
+        self._api = None
+        self._user = None
+        self._config = {
             "consumer_key": consumer_key,
             "consumer_secret": consumer_secret,
             "access_token": access_token,
@@ -19,7 +19,7 @@ class Twitter():
         self.get_tweeapi()
 
     def get_tweeapi(self):
-        config = self.config
+        config = self._config
         auth = tweepy.OAuthHandler(config['consumer_key'], config['consumer_secret'])
         auth.set_access_token(config['access_token'], config['access_token_secret'])
         api = tweepy.API(
@@ -30,25 +30,47 @@ class Twitter():
             compression=True,
             proxy=config.get('proxy', '')
         )
-        self.api = api
-        return api
+        self._api = api
+        return self
 
     def get_user(self, user_id=None, screen_name=None):
-        if not self.api:
+        if not self._api:
             raise tweepy.TweepError('Api NOT inited!')
-        user = self.api.get_user(user_id=user_id, screen_name=screen_name)
-        self.user = user
-        return self.user
+        user = self._api.get_user(user_id=user_id, screen_name=screen_name)
+        self._user = user
+        return self
 
-    def get_friends(self, callback, limit=0):
-        api = self.api
-        user = self.user
-        if not (api and user):
-            raise tweepy.TweepError('Api or user NOT inited!')
+    def authentication(method):
+        def judge(self, *args, **kargs):
+            if not self._api:
+                raise tweepy.TweepError('Api NOT inited!')
+            if not self._user:
+                raise tweepy.TweepError('User NOT inited!')
+            method(self, *args, **kargs)
+            return self
+        return judge
+
+    @authentication
+    def get_friends(self, callback=None, limit=0):
+        api = self._api
+        user = self._user
         cursor = tweepy.Cursor(api.friends, user_id=user.id, screen_name=user.screen_name)
         for index, friend in enumerate(cursor.items(limit)):
             if callable(callback):
                 callback(index, friend)
+
+    @authentication
+    def store_user(self, store=None, limit=0):
+        user = self._user
+        people = {
+            "name": user.screen_name,
+            "uid": user.id,
+            "friends_count": user.friends_count,
+            "friends": set()
+        }
+        self.get_friends(lambda i, friend: people["friends"].add(friend.id), limit)
+        if callable(store):
+            store(**people)
 
 
 

@@ -38,6 +38,11 @@ def save_many_diff_test():
         info["uid"] = info["uid"] + 1
     assert Person.objects().count() == 1 + i
 
+def person_find_test():
+    index = uid_base
+    for i in range(0, 3):
+        assert mongo_orm.people_find(uid=index+i)
+
 def person_read_all_test():
     global uid_base
     for people in Person.objects().order_by("uid"):
@@ -57,6 +62,7 @@ if __name__ == '__main__':
     connect_mongo()
     save_many_same_test()
     save_many_diff_test()
+    person_find_test()
     person_read_all_test()
     person_del_all_test()
     teardown_module()
