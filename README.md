@@ -8,6 +8,32 @@ A simple spider for Twitter interpersonal topology.
 
 
 
+## Usage
+
+**Its need python 3.5 and above.**
+
+First install require packages of python,
+
+```bash
+$ pip install -r requirements.txt
+```
+
+Then change the config file for **your own info**,
+
+```bash
+$ cp tweetconf.json.example tweetconf.json
+$ vim tweetconf.json
+```
+
+Before run the project, you can get **unit test** at first,
+
+```bash
+$ packages="conffor, database, twitter"
+$ python -m nose -w . -vs --with-coverage --cover-package="$packages"
+```
+
+**Note:** database test need **MongoDB** and config in test package as `xxx-unit.json`; twitter test need key and token which configured in `tweetconf.json`.
+
 ## License
 
 GPL
