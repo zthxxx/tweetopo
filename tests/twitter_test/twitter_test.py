@@ -14,5 +14,21 @@ def twitter_oauth():
     del twitter_conf['proxy']
     twitter = Twitter(**twitter_conf)
 
+def setup_module():
+    twitter_oauth()
+
 def get_api_test():
     twitter.get_user(screen_name=seed_name)
+
+def store_user_simulate_test():
+    limit = 20
+    def store_simulate(name, uid, friends_count, friends):
+        assert name == seed_name
+        assert isinstance(uid, int)
+        assert len(friends) == min(limit, friends_count)
+    twitter.store_user(store=store_simulate, limit=limit)
+    
+if __name__ == '__main__':
+    setup_module()
+    get_api_test()
+    store_user_simulate_test()

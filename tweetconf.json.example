@@ -4,9 +4,9 @@
     "consumer_secret": "CONSUMER_SECRET",
     "access_token": "ACCESS_TOKEN",
     "access_token_secret": "ACCESS_TOKEN_SECRET",
-    "proxy": "127.0.0.1:1080",
-    "seed_name": "SEED_NAME"
+    "proxy": "127.0.0.1:1080"
   },
+  "seed_name": "SEED_NAME",
   "mongo": {
     "host": "127.0.0.1",
     "port": 27017,
