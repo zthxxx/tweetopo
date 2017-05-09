@@ -1,9 +1,11 @@
 # -*- coding: utf-8 -*-
 import logging
 from twitter.tweeapi import Twitter
+import logsetting
 from conffor import conffor
 from database import mongo_orm as database
 store = database.people_save
+query = database.people_find
 
 conf_file = './tweetconf.json'
 config = conffor.load(conf_file)
@@ -13,14 +15,20 @@ twitter = Twitter(**config["twitter"])
 seed_name = config['seed_name']
 
 def store_user(uid=None, name=None):
-    twitter.get_user(user_id=uid, screen_name=name).store_user(store)
+    twitter.get_user(user_id=uid, screen_name=name).store_user(store, 300)
 
-
-if __name__ == "__main__":
-    query = database.people_find
+def query_from_seed(seed_name):
     people = query(name=seed_name)
-    if people:
-        for index, uid in enumerate(people.friends):
-            print(index, uid)
+    list_found = set()
+    if not people:
+        store_user(name=seed_name)
+        people = query(name=seed_name)
+    for index, uid in enumerate(people.friends):
+        logging.info([index, uid])
+        if uid not in list_found:
+            list_found.add(uid)
             if not query(uid=uid):
                 store_user(uid=uid)
+
+if __name__ == "__main__":
+    query_from_seed(seed_name)

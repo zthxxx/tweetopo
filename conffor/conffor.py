@@ -1,4 +1,8 @@
 # -*- coding: utf-8 -*-
+"""
+Some function for read and write json config file.
+"""
+
 import json
 
 def load(path):

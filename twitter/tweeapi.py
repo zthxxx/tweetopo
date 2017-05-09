@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import logging
 import tweepy
 
 class Twitter():
@@ -55,9 +56,12 @@ class Twitter():
         api = self._api
         user = self._user
         cursor = tweepy.Cursor(api.friends, user_id=user.id, screen_name=user.screen_name)
-        for index, friend in enumerate(cursor.items(limit)):
-            if callable(callback):
-                callback(index, friend)
+        try:
+            for index, friend in enumerate(cursor.items(limit)):
+                if callable(callback):
+                    callback(index, friend)
+        except tweepy.TweepError as e:
+            logging.warning([user.id, user.screen_name, e])
 
     @authentication
     def store_user(self, store=None, limit=0):
