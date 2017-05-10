@@ -42,12 +42,12 @@ class Twitter():
         return self
 
     def authentication(method):
-        def judge(self, *args, **kargs):
+        def judge(self, *args, **kwargs):
             if not self._api:
                 raise tweepy.TweepError('Api NOT inited!')
             if not self._user:
                 raise tweepy.TweepError('User NOT inited!')
-            method(self, *args, **kargs)
+            method(self, *args, **kwargs)
             return self
         return judge
 

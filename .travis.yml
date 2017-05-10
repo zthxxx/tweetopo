@@ -28,7 +28,7 @@ before_script:
   - mongo UnitTest --eval 'db.createUser({user:"unit", pwd:"UnitTest", roles:["readWrite"]});'
 
 script:
-  - packages="conffor, database, twitter"
+  - packages="conffor, database, logsetting, twitter"
   - python -m nose -w . -vs --with-coverage --cover-package="$packages"
 
 after_success:
