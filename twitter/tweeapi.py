@@ -52,13 +52,13 @@ class Twitter():
         return judge
 
     @authentication
-    def get_friends(self, callback, limit=0):
+    def get_friends(self, callback, pages_limit=0):
         api = self._api
         user = self._user
         cursor = tweepy.Cursor(api.friends_ids, user_id=user.id, screen_name=user.screen_name)
         friends = []
         try:
-            for friends_page in cursor.pages(limit):
+            for friends_page in cursor.pages(pages_limit):
                 friends.extend(friends_page)
             if callable(callback):
                 callback(friends)
@@ -66,13 +66,13 @@ class Twitter():
             logging.warning([user.id, user.screen_name, e])
 
     @authentication
-    def store_user(self, store=None, limit=0):
+    def store_user(self, store=None, pages_limit=0):
         user = self._user
         friends = []
         def set_friends(list):
             nonlocal friends
             friends = list
-        self.get_friends(set_friends, limit)
+        self.get_friends(set_friends, pages_limit)
         people = {
             "name": user.screen_name,
             "uid": user.id,
