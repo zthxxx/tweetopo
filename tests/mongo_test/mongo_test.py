@@ -5,10 +5,12 @@ from database import mongo_orm
 from database.mongo_orm import Person
 
 uid_base = randint(86344422, 986344422)
+PERSON_LENGTH = 5
 
 info = {
     "name": "testname",
     "uid": uid_base,
+    "protect": False,
     "friends_count": 4,
     "friends": ["asdf", "agd", "234f", "dfas"]
 }
@@ -33,21 +35,28 @@ def save_many_same_test():
     # It should save as only one, and not raise error.
 
 def save_many_diff_test():
-    for i in range(0, 3):
+    for i in range(0, PERSON_LENGTH):
         people_info_save(info)
         info["uid"] = info["uid"] + 1
     assert Person.objects().count() == 1 + i
 
 def person_find_test():
     index = uid_base
-    for i in range(0, 3):
+    for i in range(0, PERSON_LENGTH):
         assert mongo_orm.people_find(uid=index+i)
 
 def person_read_all_test():
-    global uid_base
+    index = uid_base
     for people in Person.objects().order_by("uid"):
-        assert people.uid == uid_base
-        uid_base += 1
+        assert people.uid == index
+        index += 1
+
+def get_person_uids_test():
+    index = uid_base
+    uids = mongo_orm.get_uids()
+    assert len(uids) == PERSON_LENGTH
+    for i in range(0, PERSON_LENGTH):
+        assert index+i in uids
 
 def person_del_all_test():
     for people in Person.objects():
@@ -64,5 +73,6 @@ if __name__ == '__main__':
     save_many_diff_test()
     person_find_test()
     person_read_all_test()
+    get_person_uids_test()
     person_del_all_test()
     teardown_module()

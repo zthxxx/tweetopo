@@ -10,12 +10,13 @@ class Person(Document):
     uid = IntField(required=True, primary_key=True)
     friends_count = IntField()
     friends = ListField()
+    protect = BooleanField()
     meta = {
         "indexes": ["#uid"]
     }
 
-def people_save(name, uid, friends_count, friends):
-    people = Person(name=name, uid=uid, friends_count=friends_count, friends=friends)
+def people_save(name, uid, protect, friends_count, friends):
+    people = Person(name=name, uid=uid, protect=protect, friends_count=friends_count, friends=friends)
     try:
         people.save()
     except NotUniqueError as e:
@@ -29,7 +30,9 @@ def people_find(name='', uid=None):
         people = query(name=name).first()
     return people
 
-
-
-
-
+def get_uids():
+    person = Person._get_collection()
+    getid = lambda item: item.get('_id')
+    uidcour = person.find({}, {"_id": 1})
+    uids = set(map(getid,uidcour))
+    return uids

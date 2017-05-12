@@ -28,7 +28,7 @@ $ vim tweetconf.json
 Before run the project, you can get **unit test** at first,
 
 ```bash
-$ packages="conffor, database, twitter"
+$ packages="conffor, database, logsetting, twitter"
 $ python -m nose -w . -vs --with-coverage --cover-package="$packages"
 ```
 
