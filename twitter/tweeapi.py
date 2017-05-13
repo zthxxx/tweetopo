@@ -83,8 +83,3 @@ class Twitter():
         if callable(store):
             store(**people)
 
-
-
-
-
-
