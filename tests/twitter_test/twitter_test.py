@@ -18,7 +18,19 @@ def twitter_oauth():
 def setup_module():
     twitter_oauth()
 
+def try_none_api_user(twitter):
+    try:
+        twitter.get_friends(None)
+    except Exception as e:
+        logging.info('None of api or user for get friends should be error.')
+        logging.info(e)
+
 def get_api_test():
+    api = twitter._api
+    twitter._api = None
+    try_none_api_user(twitter)
+    twitter._api = api
+    try_none_api_user(twitter)
     twitter.get_user(screen_name=seed_name)
 
 def store_user_simulate_test():

@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import os
 from random import randint
 from conffor import conffor
 from database import mongo_orm
@@ -6,6 +7,7 @@ from database.mongo_orm import Person
 
 uid_base = randint(86344422, 986344422)
 PERSON_LENGTH = 5
+EXPORT_STORE_FILE = './twitter_relations.test.json'
 
 info = {
     "name": "testname",
@@ -31,7 +33,7 @@ def save_many_same_test():
     people_info_save(info)
     people_info_save(info)
     people_info_save(info)
-    assert Person.objects().count() == 1
+    assert Person.objects().count() is 1
     # It should save as only one, and not raise error.
 
 def save_many_diff_test():
@@ -42,8 +44,11 @@ def save_many_diff_test():
 
 def person_find_test():
     index = uid_base
+    people = mongo_orm.people_find(name=info['name'])
+    assert people.name == info['name']
     for i in range(0, PERSON_LENGTH):
-        assert mongo_orm.people_find(uid=index+i)
+        people = mongo_orm.people_find(uid=index+i)
+        assert people.uid == index+i
 
 def person_read_all_test():
     index = uid_base
@@ -54,18 +59,22 @@ def person_read_all_test():
 def get_person_uids_test():
     index = uid_base
     uids = mongo_orm.get_uids()
-    assert len(uids) == PERSON_LENGTH
+    assert len(uids) is PERSON_LENGTH
     for i in range(0, PERSON_LENGTH):
         assert index+i in uids
+
+def export_person_collection_test():
+    mongo_orm.export_person(EXPORT_STORE_FILE, limit=10)
 
 def person_del_all_test():
     for people in Person.objects():
         people.delete()
-    assert Person.objects().count() == 0
+    assert Person.objects().count() is 0
 
 def teardown_module():
     Person.drop_collection()
-
+    if os.path.isfile(EXPORT_STORE_FILE):
+        os.remove(EXPORT_STORE_FILE)
 
 if __name__ == '__main__':
     connect_mongo()
@@ -74,5 +83,6 @@ if __name__ == '__main__':
     person_find_test()
     person_read_all_test()
     get_person_uids_test()
+    export_person_collection_test()
     person_del_all_test()
     teardown_module()
