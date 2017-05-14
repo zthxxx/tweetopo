@@ -42,6 +42,6 @@ def export_person(filename, limit=0):
     person = Person._get_collection()
     cour = person.find({}, {"_id": 1, "friends":1}).limit(limit)
     for people in cour:
-        persons[people['_id']] = {"following": people["friends"], "followers": []}
+        persons[people['_id']] = people["friends"]
     conffor.dump(filename, persons, None)
     logging.info('Export Person relationship complete.')
