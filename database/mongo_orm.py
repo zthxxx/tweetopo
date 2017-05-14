@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import logging
 from mongoengine import *
+from conffor import conffor
 
 def set_connect(host, port, database, user=None, passwd=None):
     return connect(db=database, host=host, port=port, username=user, password=passwd)
@@ -23,11 +24,10 @@ def people_save(name, uid, protect, friends_count, friends):
         logging.warning([people.uid, people.name, "has exist."])
 
 def people_find(name='', uid=None):
-    query = Person.objects
     if uid is not None:
-        people = query(uid=uid).first()
+        people = Person.objects(uid=uid).first()
     else:
-        people = query(name=name).first()
+        people = Person.objects(name=name).first()
     return people
 
 def get_uids():
@@ -36,3 +36,12 @@ def get_uids():
     uidcour = person.find({}, {"_id": 1})
     uids = set(map(getid,uidcour))
     return uids
+
+def export_person(filename, limit=0):
+    persons = dict()
+    person = Person._get_collection()
+    cour = person.find({}, {"_id": 1, "friends":1}).limit(limit)
+    for people in cour:
+        persons[people['_id']] = {"following": people["friends"], "followers": []}
+    conffor.dump(filename, persons, None)
+    logging.info('Export Person relationship complete.')

@@ -3,6 +3,7 @@ __pycache__/
 venv/
 test.json
 tweetconf.json
+twitter_relations.json
 .project
 .coverage
 *.pyc

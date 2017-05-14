@@ -11,11 +11,11 @@ def load(path):
         config = json.load(jsonfile, encoding="utf-8")
     return config
 
-def dump(path, config):
+def dump(path, config, indent=2):
     with open(path, 'w+', encoding="utf-8") as jsonfile:
         json.dump(
             config, jsonfile,
-            indent=2,
+            indent=indent,
             ensure_ascii=False,
             sort_keys=True
         )

@@ -15,6 +15,7 @@ A simple spider for Twitter interpersonal topology.
 First install require packages of python,
 
 ```bash
+# recommend to use venv
 $ pip install -r requirements.txt
 ```
 

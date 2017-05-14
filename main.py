@@ -39,14 +39,24 @@ def query_from_queue(twitter, unfounds):
         store_user(twitter, uid=uid)
     logging.info('Task complete!')
 
-def start_travers_crawling(tokens, unfounds):
+def start_travers_crawling(tokens, unfounds, block=True):
+    tasks = []
     for token in tokens:
         twitter = Twitter(**token)
         task = Thread(target=query_from_queue, args=(twitter, unfounds))
+        tasks.append(task)
         task.start()
     logging.info('Tasks started!')
+    if block:
+        for task in tasks:
+            task.join()
+        logging.info('Tasks all complete!')
+
+def export_person_list(filename):
+    database.export_person(filename)
 
 if __name__ == "__main__":
     people = get_seed_people(seed_name)
     unfounds = get_unfound_queue(people.friends, founds)
     start_travers_crawling(tokens, unfounds)
+    export_person_list('twitter_relations.json')

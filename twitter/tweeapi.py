@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import logging
 import tweepy
+from retrying import retry
 
 class Twitter():
     def __init__(self,
@@ -34,10 +35,15 @@ class Twitter():
         self._api = api
         return self
 
+    @retry(wait_random_min=10*1000, wait_random_max=20*1000, stop_max_attempt_number=20)
     def get_user(self, user_id=None, screen_name=None):
         if not self._api:
             raise tweepy.TweepError('Api NOT inited!')
-        user = self._api.get_user(user_id=user_id, screen_name=screen_name)
+        try:
+            user = self._api.get_user(user_id=user_id, screen_name=screen_name)
+        except tweepy.TweepError as e:
+            logging.error(e)
+            raise e
         self._user = user
         return self
 
