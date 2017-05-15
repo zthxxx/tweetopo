@@ -55,8 +55,8 @@ def start_travers_crawling(tokens, unfounds, block=True):
             task.join()
         logging.info('Tasks all complete!')
 
-def export_person_list(filename):
-    database.export_person(filename)
+def export_person_list(filename, seed_name=None):
+    database.export_person(filename, seed_name=seed_name)
 
 if __name__ == "__main__":
     people = get_seed_people(seed_name)

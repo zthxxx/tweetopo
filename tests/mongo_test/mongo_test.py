@@ -64,7 +64,7 @@ def get_person_uids_test():
         assert index+i in uids
 
 def export_person_collection_test():
-    mongo_orm.export_person(EXPORT_STORE_FILE, limit=10)
+    mongo_orm.export_person(EXPORT_STORE_FILE, seed_name=info['name'], limit=10)
 
 def person_del_all_test():
     for people in Person.objects():

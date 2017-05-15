@@ -1,13 +1,9 @@
 # -*- coding: utf-8 -*-
 import logging
-import random
-import math
-import numpy as np
-import networkx as nx
 import pandas as pd
-import matplotlib.pyplot as plt
 import logsetting
 from conffor import conffor
+from netgraph.net_distribution import DrawDistribution
 
 relation_file = './twitter_relations.json'
 mutual_friends_file = './mutual_friends.csv'
@@ -34,8 +30,8 @@ def get_mutual_friends_edges(relations):
             if friend in users:
                 friend_friends = relations[str(friend)]
                 if user in friend_friends:
-                    weight = get_mutual_count(friends, friend_friends)
-                    edges.append((user, friend, weight))
+                    # weight = get_mutual_count(friends, friend_friends)
+                    edges.append((user, friend, 1))
     return edges
 
 def save_mutual_friends(edges):
@@ -50,21 +46,11 @@ def read_mutual_friends(file_name):
     edges = edges_frame.values
     return edges
 
-def plot_edges_graph(edges):
-    graph = nx.Graph()
-    graph.add_weighted_edges_from(edges)
-    pos = nx.spring_layout(graph)
-    nx.draw(
-        graph, pos,
-        node_size=30,
-        alpha=0.8,
-        with_labels=False
-    )
-    plt.show()
-
 if __name__ == "__main__":
-    edges = get_mutual_friends_edges(relations)
-    save_mutual_friends(edges)
+    # edges = get_mutual_friends_edges(relations)
+    # save_mutual_friends(edges)
 
     edges = read_mutual_friends(mutual_friends_file)
-    plot_edges_graph(edges)
+    drawer = DrawDistribution()
+    drawer.import_data(edges)
+    drawer.plot_networkx()

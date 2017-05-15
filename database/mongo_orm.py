@@ -37,10 +37,14 @@ def get_uids():
     uids = set(map(getid,uidcour))
     return uids
 
-def export_person(filename, limit=0):
+def export_person(filename, seed_name=None, limit=0):
     persons = dict()
     person = Person._get_collection()
-    cour = person.find({}, {"_id": 1, "friends":1}).limit(limit)
+    query_obj = {}
+    if seed_name:
+        people = people_find(name=seed_name)
+        query_obj['_id'] = {'$in': people.friends}
+    cour = person.find(query_obj, {"_id": 1, "friends":1}).limit(limit)
     for people in cour:
         persons[people['_id']] = people["friends"]
     conffor.dump(filename, persons, None)
