@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import logging
 import queue
+import time
 from threading import Thread
 from twitter.tweeapi import Twitter
 import logsetting
@@ -33,20 +34,22 @@ def get_unfound_queue(friends, founds):
         unfounds.put(uid)
     return unfounds
 
-def query_from_queue(twitter, unfounds):
+def query_from_queue(index, twitter, unfounds):
+    time.sleep(index)
+    logging.info('Thead-%d : tasks started!' %index)
     while not unfounds.empty():
         uid = unfounds.get_nowait()
         store_user(twitter, uid=uid)
-    logging.info('Task complete!')
+    logging.info('Thead-%d : task complete!' %index)
 
 def start_travers_crawling(tokens, unfounds, block=True):
     tasks = []
-    for token in tokens:
+    for index, token in enumerate(tokens):
         twitter = Twitter(**token)
-        task = Thread(target=query_from_queue, args=(twitter, unfounds))
+        task = Thread(target=query_from_queue, args=(index+1, twitter, unfounds))
         tasks.append(task)
         task.start()
-    logging.info('Tasks started!')
+    logging.info('Tasks all started!')
     if block:
         for task in tasks:
             task.join()

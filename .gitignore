@@ -1,9 +1,6 @@
 .idea/
 __pycache__/
 venv/
-test.json
-tweetconf.json
-twitter_relations.json
 .project
 .coverage
 *.pyc
@@ -12,3 +9,5 @@ twitter_relations.json
 *.log
 *.out
 *.csv
+*.json
+!*unit_test.json

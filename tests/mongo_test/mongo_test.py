@@ -18,7 +18,7 @@ info = {
 }
 
 def connect_mongo():
-    conf_file = 'tests/mongo_test/mongo_unit.json'
+    conf_file = 'tests/mongo_test/mongo_unit_test.json'
     config = conffor.load(conf_file)
     mongo_conf = config['mongo']
     mongo_orm.set_connect(**mongo_conf)
