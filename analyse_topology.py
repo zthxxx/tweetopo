@@ -47,8 +47,8 @@ def read_mutual_friends(file_name):
     return edges
 
 if __name__ == "__main__":
-    # edges = get_mutual_friends_edges(relations)
-    # save_mutual_friends(edges)
+    edges = get_mutual_friends_edges(relations)
+    save_mutual_friends(edges)
 
     edges = read_mutual_friends(mutual_friends_file)
     drawer = DrawDistribution()
