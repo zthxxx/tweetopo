@@ -5,48 +5,57 @@ import networkx as nx
 import matplotlib.pyplot as plt
 import matplotlib.colors as colors
 
-class DrawDistribution:
-    def __init__(self):
+class GraphAnalysis:
+    def __init__(self, edges):
         self.G = nx.Graph()
-        self.degree = None
-        self.pageranks = None
-        self.max_pagerank = None
-        self.max_degree = None
-        self.pos = None
-        self.min_node_size = 20
-        self.max_node_size = 360
+        self.import_data(edges)
 
     def import_data(self, edges):
         self.G.add_weighted_edges_from(edges)
         self.pos = nx.spring_layout(self.G, iterations=100)
-        self.degree = dict(nx.degree(self.G))
-        self.pageranks = nx.pagerank(self.G)
-        self.clustering = nx.clustering(self.G)
-        self.max_degree = max(self.degree.values())
-        self.max_pagerank = max(self.pageranks.values())
-        self.max_clustering = max(self.clustering.values())
-        # self.filter_nodes()
+        self.get_measures()
 
-    def filter_nodes(self):
-        micro_nodes = [node for node, deg in self.degree.items() if deg < 8]
-        self.G.remove_nodes_from(micro_nodes)
+    def get_measures(self):
+        self.degrees = dict(nx.degree(self.G))
+        self.max_degree = max(self.degrees.values())
+        self.pageranks = nx.pagerank(self.G)
+        self.max_pagerank = max(self.pageranks.values())
+        self.clusterings = nx.clustering(self.G)
+        self.max_clustering = max(self.clusterings.values())
 
     def node_rank(self, node):
         '''
         :param n:  node
         :return: Normalized value from 0 to 1, mean that the rank of the node
         '''
-        # rank = self.degree[node] / self.max_degree
-        # rank = math.log(self.degree[node]+1, self.max_degree+1)
+        # rank = self.degrees[node] / self.max_degree
+        # rank = math.log(self.degrees[node]+1, self.max_degree+1)
         rank = self.pageranks[node] / self.max_pagerank
-        # rank = self.clustering[node] / self.max_clustering
+        # rank = self.clusterings[node] / self.max_clustering
         return rank
+
+    def filter_nodes(self, gate):
+        deserts = [node for node in self.G.nodes()
+                       if self.node_rank(node) < gate]
+        self.G.remove_nodes_from(deserts)
+
+
+    def get_nodes(self):
+        nodes = self.G.nodes()
+        users = [(n , self.degrees[n], self.pageranks[n], self.clusterings[n])  for n in nodes]
+        return users
+
+class DrawDistribution(GraphAnalysis):
+    MIN_NODE_SIZE = 20
+    MAX_NODE_SIZE = 360
+    def __init__(self, edges):
+        super().__init__(edges)
 
     def node_size(self, n):
         rank = self.node_rank(n)
-        d = rank * self.max_node_size
-        if d < self.min_node_size:
-            d = self.min_node_size
+        d = rank * self.MAX_NODE_SIZE
+        if d < self.MIN_NODE_SIZE:
+            d = self.MIN_NODE_SIZE
         return d
 
     def nodes_size(self, nodes):
@@ -73,7 +82,7 @@ class DrawDistribution:
         return [self.node_color(n) for n in nodes]
 
     def edge_color(self, edge):
-        degrees = self.degree
+        degrees = self.degrees
         node1 = edge[0]
         node2 = edge[1]
         node = node1 if degrees[node1] < degrees[node2] else node2
@@ -82,22 +91,24 @@ class DrawDistribution:
     def edges_color(self, edges):
         return [self.edge_color(edge) for edge in edges]
 
-    def plot_networkx(self):
+    def plot_networkx(self, with_label=False):
         nx.draw_networkx_edges(
             self.G, self.pos,
             edge_color=self.edges_color(self.G.edges()),
             alpha=0.08
         )
-        # nx.draw_networkx_labels(
-        #     self.G, self.pos,
-        #     font_size=8,
-        #     font_color='r',
-        #     alpha=0.2
-        # )
+        if with_label:
+            nx.draw_networkx_labels(
+                self.G, self.pos,
+                font_size=8,
+                font_color='r',
+                alpha=0.2
+            )
+        nodes = self.G.nodes()
         nx.draw_networkx_nodes(
             self.G, self.pos,
-            node_size=self.nodes_size(self.G.nodes()),
-            node_color=self.nodes_color(self.G.nodes()),
+            node_size=self.nodes_size(nodes),
+            node_color=self.nodes_color(nodes),
             alpha=0.85
         )
         plt.axis('off')
@@ -114,11 +125,11 @@ class DrawDistribution:
     def plot_rank_pdf_cdf(self):
         '''
         ranklist:
-            self.degree
+            self.degrees
             self.pageranks
-            self.clustering
+            self.clusterings
         '''
-        signal = list(self.clustering.values())
+        signal = list(self.clusterings.values())
         signal = np.asarray(signal)
         self.plot_pdf(signal)
         self.plot_cdf(signal)

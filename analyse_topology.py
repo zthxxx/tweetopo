@@ -7,6 +7,7 @@ from netgraph.net_distribution import DrawDistribution
 
 relation_file = './twitter_relations.json'
 mutual_friends_file = './mutual_friends.csv'
+hub_users_file = './hub_users.csv'
 relations = conffor.load(relation_file)
 
 def get_jaccard_between(set_from, set_to):
@@ -46,11 +47,19 @@ def read_mutual_friends(file_name):
     edges = edges_frame.values
     return edges
 
+def save_hub_users(nodes):
+    columns = ['uid', 'degree', 'pagerank', 'clustering']
+    nodes_frame = pd.DataFrame(nodes, columns=columns)
+    nodes_frame.to_csv(hub_users_file, columns=columns,
+                   header=True, index=False)
+
 if __name__ == "__main__":
     edges = get_mutual_friends_edges(relations)
     save_mutual_friends(edges)
 
     edges = read_mutual_friends(mutual_friends_file)
-    drawer = DrawDistribution()
-    drawer.import_data(edges)
+    drawer = DrawDistribution(edges)
+    drawer.filter_nodes(0.2)
+    nodes = drawer.get_nodes()
+    save_hub_users(nodes)
     drawer.plot_networkx()
