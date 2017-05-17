@@ -31,35 +31,45 @@ def get_mutual_friends_edges(relations):
             if friend in users:
                 friend_friends = relations[str(friend)]
                 if user in friend_friends:
-                    # weight = get_mutual_count(friends, friend_friends)
+                    # weight = get_jaccard_between(friends, friend_friends)
+                    # edges.append((user, friend, weight))
                     edges.append((user, friend, 1))
     return edges
 
-def save_mutual_friends(edges):
+def save_list_csv(data, columns, file_name):
+    frame = pd.DataFrame(data, columns=columns)
+    frame.to_csv(file_name, columns=columns,
+                       header=True, index=False)
+
+def read_list_csv(columns, file_name):
+    frame = pd.read_csv(file_name, names=columns, header=0)
+    datas = frame.values
+    return datas
+
+def save_mutual_friends(edges, file_name):
     columns = ['user', 'friend', 'weight']
-    edges_frame = pd.DataFrame(edges, columns=columns)
-    edges_frame.to_csv(mutual_friends_file, columns=columns,
-                   header=True, index=False)
+    save_list_csv(edges, columns, file_name)
 
 def read_mutual_friends(file_name):
     columns = ['user', 'friend', 'weight']
-    edges_frame = pd.read_csv(file_name, names=columns, header=0)
-    edges = edges_frame.values
-    return edges
+    return read_list_csv(columns, file_name)
 
-def save_hub_users(nodes):
+def save_hub_users(nodes, file_name):
     columns = ['uid', 'degree', 'pagerank', 'clustering']
-    nodes_frame = pd.DataFrame(nodes, columns=columns)
-    nodes_frame.to_csv(hub_users_file, columns=columns,
-                   header=True, index=False)
+    save_list_csv(nodes, columns, file_name)
+
+def read_hub_users(file_name):
+    columns = ['uid', 'degree', 'pagerank', 'clustering']
+    return read_list_csv(columns, file_name)
 
 if __name__ == "__main__":
     edges = get_mutual_friends_edges(relations)
-    save_mutual_friends(edges)
+    save_mutual_friends(edges, mutual_friends_file)
 
     edges = read_mutual_friends(mutual_friends_file)
-    drawer = DrawDistribution(edges)
-    drawer.filter_nodes(0.2)
+    drawer = DrawDistribution(edges, measure='pagerank')
+    drawer.filter_nodes(0.3)
     nodes = drawer.get_nodes()
-    save_hub_users(nodes)
+    save_hub_users(nodes, hub_users_file)
     drawer.plot_networkx()
+    drawer.plot_rank_pdf_cdf()
