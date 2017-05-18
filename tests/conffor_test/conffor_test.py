@@ -4,7 +4,7 @@ import random
 import os
 from conffor import conffor
 
-jsonfile = './test.json'
+JSONFILE = './test.json'
 
 config = {
     'name': 'test',
@@ -16,13 +16,16 @@ config = {
 }
 
 def conf_write_read_test():
-    conffor.dump(jsonfile, config)
-    conf_test = conffor.load(jsonfile)
-    if os.path.exists(jsonfile):
-        os.remove(jsonfile)
+    conffor.dump(JSONFILE, config)
+    conf_test = conffor.load(JSONFILE)
     for key in config:
         assert config[key] == conf_test[key]
-    logging.warning("Test config read and save method OK.")
+    logging.info("Test config read and save method OK.")
+
+def teardown_module():
+    if os.path.isfile(JSONFILE):
+        os.remove(JSONFILE)
 
 if __name__ == '__main__':
     conf_write_read_test()
+    teardown_module()
