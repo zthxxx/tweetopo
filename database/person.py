@@ -26,7 +26,7 @@ def people_save(name, uid, **kwargs):
     try:
         people.save()
     except NotUniqueError as e:
-        logging.warning([people.uid, people.name, "has exist."])
+        logging.warning([people.uid, people.name, "has exist person collection.."])
 
 def people_find(name='', uid=None):
     if uid is not None:
