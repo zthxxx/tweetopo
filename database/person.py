@@ -3,9 +3,6 @@ import logging
 from mongoengine import *
 from conffor import conffor
 
-def set_connect(host, port, database, user=None, passwd=None):
-    return connect(db=database, host=host, port=port, username=user, password=passwd)
-
 class Person(Document):
     name = StringField()
     uid = IntField(required=True, primary_key=True)
@@ -37,7 +34,7 @@ def get_uids():
     uids = set(map(getid,uidcour))
     return uids
 
-def export_person(filename, seed_name=None, limit=0):
+def export_relation(filename, seed_name=None, limit=0):
     persons = dict()
     person = Person._get_collection()
     query_obj = {}

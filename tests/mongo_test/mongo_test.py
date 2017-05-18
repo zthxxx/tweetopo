@@ -2,8 +2,11 @@
 import os
 from random import randint
 from conffor import conffor
-from database import mongo_orm
-from database.mongo_orm import Person
+import database as db
+
+store = db.person.people_save
+query = db.person.people_find
+Person = db.person.Person
 
 uid_base = randint(86344422, 986344422)
 PERSON_LENGTH = 5
@@ -21,13 +24,13 @@ def connect_mongo():
     conf_file = 'tests/mongo_test/mongo_unit_test.json'
     config = conffor.load(conf_file)
     mongo_conf = config['mongo']
-    mongo_orm.set_connect(**mongo_conf)
+    db.set_connect(**mongo_conf)
 
 def setup_module():
     connect_mongo()
 
 def people_info_save(info):
-    mongo_orm.people_save(**info)
+    store(**info)
 
 def save_many_same_test():
     people_info_save(info)
@@ -44,10 +47,10 @@ def save_many_diff_test():
 
 def person_find_test():
     index = uid_base
-    people = mongo_orm.people_find(name=info['name'])
+    people = query(name=info['name'])
     assert people.name == info['name']
     for i in range(0, PERSON_LENGTH):
-        people = mongo_orm.people_find(uid=index+i)
+        people = query(uid=index + i)
         assert people.uid == index+i
 
 def person_read_all_test():
@@ -58,13 +61,13 @@ def person_read_all_test():
 
 def get_person_uids_test():
     index = uid_base
-    uids = mongo_orm.get_uids()
+    uids = db.person.get_uids()
     assert len(uids) is PERSON_LENGTH
     for i in range(0, PERSON_LENGTH):
         assert index+i in uids
 
 def export_person_collection_test():
-    mongo_orm.export_person(EXPORT_STORE_FILE, seed_name=info['name'], limit=10)
+    db.person.export_relation(EXPORT_STORE_FILE, seed_name=info['name'], limit=10)
 
 def person_del_all_test():
     for people in Person.objects():

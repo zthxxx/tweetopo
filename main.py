@@ -6,14 +6,15 @@ from threading import Thread
 from twitter.tweeapi import Twitter
 import logsetting
 from conffor import conffor
-from database import mongo_orm as database
-store = database.people_save
-query = database.people_find
+import database as db
+
+store = db.person.people_save
+query = db.person.people_find
 
 conf_file = './tweetconf.json'
 config = conffor.load(conf_file)
-database.set_connect(**config["mongo"])
-founds = set(database.get_uids())
+db.set_connect(**config["mongo"])
+founds = set(db.person.get_uids())
 seed_name = config['seed_name']
 tokens = config["twitter"]
 
@@ -56,7 +57,7 @@ def start_travers_crawling(tokens, unfounds, block=True):
         logging.info('Tasks all complete!')
 
 def export_person_list(filename, seed_name=None):
-    database.export_person(filename, seed_name=seed_name)
+    db.person.export_relation(filename, seed_name=seed_name)
 
 if __name__ == "__main__":
     people = get_seed_people(seed_name)
