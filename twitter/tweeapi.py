@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
+import time
 import logging
+from threading import Thread
 import tweepy
 from retrying import retry
 
@@ -35,12 +37,12 @@ class Twitter():
         self._api = api
         return self
 
-    @retry(wait_random_min=10*1000, wait_random_max=20*1000, stop_max_attempt_number=20)
-    def get_user(self, user_id=None, screen_name=None):
+    @retry(wait_random_min=10*1000, wait_random_max=20*1000, stop_max_attempt_number=5)
+    def get_user(self, uid=None, name=None):
         if not self._api:
             raise tweepy.TweepError('Api NOT inited!')
         try:
-            user = self._api.get_user(user_id=user_id, screen_name=screen_name)
+            user = self._api.get_user(user_id=uid, screen_name=name)
         except tweepy.TweepError as e:
             logging.error(e)
             raise e
@@ -72,20 +74,76 @@ class Twitter():
             logging.warning([user.id, user.screen_name, e])
 
     @authentication
-    def store_user(self, store=None, pages_limit=0):
+    def store_user_relation(self, store=None, pages_limit=0):
         user = self._user
         friends = []
         def set_friends(list):
             nonlocal friends
             friends = list
-        self.get_friends(set_friends, pages_limit)
-        people = {
-            "name": user.screen_name,
-            "uid": user.id,
-            "protect": user.protected,
-            "friends_count": user.friends_count
-        }
-        people["friends"] = friends
         if callable(store):
+            self.get_friends(set_friends, pages_limit)
+            people = {
+                "name": user.screen_name,
+                "uid": user.id,
+                "protect": user.protected,
+                "friends_count": user.friends_count
+            }
+            people["friends"] = friends
             store(**people)
 
+    @authentication
+    def store_user_details(self, store=None):
+        user = self._user
+        if callable(store):
+            people = {
+                'uid': user.id,
+                'name': user.screen_name,
+                'fullname': user.name,
+                'description': user.description,
+                'sign_at': user.created_at,
+                'location': user.location,
+                'time_zone': user.time_zone,
+                'friends_count': user.friends_count,
+                'followers_count': user.followers_count,
+                'statuses_count': user.statuses_count,
+                'url': user.url,
+                'protect': user.protected,
+                'verified': user.verified
+            }
+            store(**people)
+
+def multi_tweecrawl(tokens, uids_queue, block=True, **kwargs):
+    '''
+    multi-threading for crawl twitter api with users id
+    :param tokens:
+    :param uids_queue:
+    :param block:
+    :param kwargs:
+    :return:
+    '''
+    def thread_from_queue(index, twitter, callback=None):
+        '''
+        :param index: thread index to start and sleep
+        :param twitter: authentic instance of Twitter
+        :param callback: func of operate which receive two param (twitter, uid)
+        '''
+        time.sleep(index)
+        logging.info('Twitter thead-%d : tasks started!' % index)
+        if callable(callback):
+            while not uids_queue.empty():
+                uid = uids_queue.get_nowait()
+                twitter.get_user(uid=uid)
+                callback(twitter, uid=uid)
+        logging.info('Twitter thead-%d : task complete!' % index)
+
+    tasks = []
+    for index, token in enumerate(tokens):
+        twitter = Twitter(**token)
+        task = Thread(target=thread_from_queue, args=(index+1, twitter), kwargs=kwargs)
+        tasks.append(task)
+        task.start()
+    logging.info('Twitter tasks all started!')
+    if block:
+        for task in tasks:
+            task.join()
+        logging.info('Twitter tasks all complete!')

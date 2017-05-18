@@ -4,9 +4,9 @@ from random import randint
 from conffor import conffor
 import database as db
 
-store = db.person.people_save
-query = db.person.people_find
-Person = db.person.Person
+store = db.relation.people_save
+query = db.relation.people_find
+Person = db.relation.Relation
 
 uid_base = randint(86344422, 986344422)
 PERSON_LENGTH = 5
@@ -61,13 +61,13 @@ def person_read_all_test():
 
 def get_person_uids_test():
     index = uid_base
-    uids = db.person.get_uids()
+    uids = db.relation.get_uids()
     assert len(uids) is PERSON_LENGTH
     for i in range(0, PERSON_LENGTH):
         assert index+i in uids
 
 def export_person_collection_test():
-    db.person.export_relation(EXPORT_STORE_FILE, seed_name=info['name'], limit=10)
+    db.relation.export_relation(EXPORT_STORE_FILE, seed_name=info['name'], limit=10)
 
 def person_del_all_test():
     for people in Person.objects():

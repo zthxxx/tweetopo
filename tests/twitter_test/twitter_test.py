@@ -31,7 +31,7 @@ def get_api_test():
     try_none_api_user(twitter)
     twitter._api = api
     try_none_api_user(twitter)
-    twitter.get_user(screen_name=seed_name)
+    twitter.get_user(name=seed_name)
 
 def store_user_simulate_test():
     pages_limit = 1
@@ -42,7 +42,7 @@ def store_user_simulate_test():
         assert name == seed_name
         assert isinstance(uid, int)
         assert len(friends) == min(pages_limit*page_include, friends_count)
-    twitter.store_user(store=store_simulate, pages_limit=pages_limit)
+    twitter.store_user_relation(store=store_simulate, pages_limit=pages_limit)
 
 if __name__ == '__main__':
     setup_module()

@@ -1,31 +1,35 @@
 # -*- coding: utf-8 -*-
 import logging
 import queue
-import time
-from threading import Thread
-from twitter.tweeapi import Twitter
 import logsetting
+from twitter.tweeapi import Twitter
+from twitter.tweeapi import multi_tweecrawl
 from conffor import conffor
 import database as db
 
-store = db.person.people_save
-query = db.person.people_find
+relate_store = db.relation.people_save
+relate_query = db.relation.people_find
+detail_store = db.person.people_save
 
 conf_file = './tweetconf.json'
 config = conffor.load(conf_file)
 db.set_connect(**config["mongo"])
-founds = set(db.person.get_uids())
 seed_name = config['seed_name']
 tokens = config["twitter"]
 
-def store_user(twitter, uid=None, name=None):
-    twitter.get_user(user_id=uid, screen_name=name).store_user(store)
+def store_relation(twitter, uid=None):
+    twitter.store_user_relation(relate_store)
+
+def store_people_details(twitter, uid=None):
+    twitter.store_user_details(detail_store)
 
 def get_seed_people(seed_name):
-    people = query(name=seed_name)
+    people = relate_query(name=seed_name)
     if not people:
-        store_user(Twitter(**tokens[0]), name=seed_name)
-        people = query(name=seed_name)
+        Twitter(**tokens[0])\
+            .get_user(name=seed_name)\
+            .store_user_relation(relate_store)
+        people = relate_query(name=seed_name)
     return people
 
 def get_unfound_queue(friends, founds):
@@ -35,32 +39,24 @@ def get_unfound_queue(friends, founds):
         unfounds.put(uid)
     return unfounds
 
-def query_from_queue(index, twitter, unfounds):
-    time.sleep(index)
-    logging.info('Thead-%d : tasks started!' %index)
-    while not unfounds.empty():
-        uid = unfounds.get_nowait()
-        store_user(twitter, uid=uid)
-    logging.info('Thead-%d : task complete!' %index)
+def start_crawling_relation(tokens, unfounds):
+    multi_tweecrawl(tokens, unfounds, callback=store_relation)
 
-def start_travers_crawling(tokens, unfounds, block=True):
-    tasks = []
-    for index, token in enumerate(tokens):
-        twitter = Twitter(**token)
-        task = Thread(target=query_from_queue, args=(index+1, twitter, unfounds))
-        tasks.append(task)
-        task.start()
-    logging.info('Tasks all started!')
-    if block:
-        for task in tasks:
-            task.join()
-        logging.info('Tasks all complete!')
+def start_crawling_people_details(tokens, unfounds):
+    multi_tweecrawl(tokens, unfounds, callback=store_people_details)
 
-def export_person_list(filename, seed_name=None):
-    db.person.export_relation(filename, seed_name=seed_name)
+def crawl_detail_from_hub():
+    from analyse_topology import hub_users_file, read_hub_persons
+    hub_persons = read_hub_persons(hub_users_file)
+    hub_uids = {int(person[0]) for person in hub_persons}
+    founds = db.person.get_uids()
+    unfounds = get_unfound_queue(hub_uids, founds)
+    start_crawling_people_details(tokens, unfounds)
 
 if __name__ == "__main__":
-    people = get_seed_people(seed_name)
-    unfounds = get_unfound_queue(people.friends, founds)
-    start_travers_crawling(tokens, unfounds)
-    export_person_list('twitter_relations.json')
+    # people = get_seed_people(seed_name)
+    # founds = set(db.relation.get_uids())
+    # unfounds = get_unfound_queue(people.friends, founds)
+    # start_crawling_relation(tokens, unfounds)
+    # db.relation.export_relation('twitter_relations.json')
+    crawl_detail_from_hub()

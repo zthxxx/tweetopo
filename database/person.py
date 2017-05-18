@@ -5,16 +5,24 @@ from conffor import conffor
 
 class Person(Document):
     name = StringField()
+    fullname = StringField()
     uid = IntField(required=True, primary_key=True)
+    description = StringField()
+    sign_at = DateTimeField()
+    location = StringField()
+    time_zone = StringField()
     friends_count = IntField()
-    friends = ListField()
+    followers_count = IntField()
+    statuses_count = IntField()
+    url = StringField()
     protect = BooleanField()
+    verified = BooleanField()
     meta = {
         "indexes": ["#uid"]
     }
 
-def people_save(name, uid, protect, friends_count, friends):
-    people = Person(name=name, uid=uid, protect=protect, friends_count=friends_count, friends=friends)
+def people_save(name, uid, **kwargs):
+    people = Person(name=name, uid=uid, **kwargs)
     try:
         people.save()
     except NotUniqueError as e:
@@ -29,20 +37,22 @@ def people_find(name='', uid=None):
 
 def get_uids():
     person = Person._get_collection()
-    getid = lambda item: item.get('_id')
     uidcour = person.find({}, {"_id": 1})
-    uids = set(map(getid,uidcour))
+    uids = {people.get('_id') for people in uidcour}
     return uids
 
-def export_relation(filename, seed_name=None, limit=0):
-    persons = dict()
+def export_persons(uids, filename, limit=0):
+    columns = ['name', 'fullname', 'description', 'sign_at', 'location',
+               'time_zone', 'friends_count', 'followers_count', 'statuses_count', 'url', 'protect', 'verified']
     person = Person._get_collection()
     query_obj = {}
-    if seed_name:
-        people = people_find(name=seed_name)
-        query_obj['_id'] = {'$in': people.friends}
-    cour = person.find(query_obj, {"_id": 1, "friends":1}).limit(limit)
-    for people in cour:
-        persons[people['_id']] = people["friends"]
+    if uids:
+        query_obj['_id'] = {'$in': uids}
+    cour = person.find(query_obj).limit(limit)
+    persons = {
+        people.get('_id'): {
+            column: people.get(column) for column in columns
+        } for people in cour
+    }
     conffor.dump(filename, persons, None)
-    logging.info('Export Person relationship complete.')
+    logging.info('Export all person info complete.')

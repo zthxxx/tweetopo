@@ -2,12 +2,12 @@
 import logging
 import pandas as pd
 import logsetting
-from conffor import conffor
+from conffor import conffor, csvtor as csv
 from netgraph.net_distribution import DrawDistribution
 
 relation_file = './twitter_relations.json'
 mutual_friends_file = './mutual_friends.csv'
-hub_users_file = './hub_users.csv'
+hub_users_file = './hub_persons.csv'
 relations = conffor.load(relation_file)
 
 def get_jaccard_between(set_from, set_to):
@@ -36,31 +36,21 @@ def get_mutual_friends_edges(relations):
                     edges.append((user, friend, 1))
     return edges
 
-def save_list_csv(data, columns, file_name):
-    frame = pd.DataFrame(data, columns=columns)
-    frame.to_csv(file_name, columns=columns,
-                       header=True, index=False)
-
-def read_list_csv(columns, file_name):
-    frame = pd.read_csv(file_name, names=columns, header=0)
-    datas = frame.values
-    return datas
-
-def save_mutual_friends(edges, file_name):
+def save_mutual_friends(edges, filename):
     columns = ['user', 'friend', 'weight']
-    save_list_csv(edges, columns, file_name)
+    csv.save_list_csv(edges, columns, filename)
 
-def read_mutual_friends(file_name):
+def read_mutual_friends(filename):
     columns = ['user', 'friend', 'weight']
-    return read_list_csv(columns, file_name)
+    return csv.read_list_csv(columns, filename)
 
-def save_hub_users(nodes, file_name):
+def save_hub_persons(nodes, filename):
     columns = ['uid', 'degree', 'pagerank', 'clustering']
-    save_list_csv(nodes, columns, file_name)
+    csv.save_list_csv(nodes, columns, filename)
 
-def read_hub_users(file_name):
+def read_hub_persons(filename):
     columns = ['uid', 'degree', 'pagerank', 'clustering']
-    return read_list_csv(columns, file_name)
+    return csv.read_list_csv(columns, filename)
 
 if __name__ == "__main__":
     edges = get_mutual_friends_edges(relations)
@@ -70,6 +60,6 @@ if __name__ == "__main__":
     drawer = DrawDistribution(edges, measure='pagerank')
     drawer.filter_nodes(0.3)
     nodes = drawer.get_nodes()
-    save_hub_users(nodes, hub_users_file)
+    save_hub_persons(nodes, hub_users_file)
     drawer.plot_networkx()
     drawer.plot_rank_pdf_cdf()
