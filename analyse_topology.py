@@ -7,7 +7,9 @@ from netgraph.net_distribution import DrawDistribution
 
 relation_file = './twitter_relations.json'
 mutual_friends_file = './mutual_friends.csv'
-hub_users_file = './hub_persons.csv'
+hub_users_csv = './hub_persons.csv'
+hub_users_json = './hub_persons.json'
+hub_details_csv = './hub_details.csv'
 relations = conffor.load(relation_file)
 
 def get_jaccard_between(set_from, set_to):
@@ -52,6 +54,20 @@ def read_hub_persons(filename):
     columns = ['uid', 'degree', 'pagerank', 'clustering']
     return csv.read_list_csv(columns, filename)
 
+def save_hub_details(filename):
+    rank_columns = ['uid', 'degree', 'pagerank', 'clustering']
+    detail_columns = ['name', 'fullname', 'description', 'sign_at', 'location',
+               'time_zone', 'friends_count', 'followers_count', 'statuses_count', 'url', 'protect', 'verified']
+    persons_db = conffor.load(hub_users_json)
+    persons_list = read_hub_persons(hub_users_csv)
+    details = []
+    for person in persons_list:
+        uid, *ranks = person
+        if uid in persons_db:
+            data = [persons_db[uid].get(column) for column in detail_columns]
+            details.append((uid, *ranks, *data))
+    csv.save_list_csv(details, [*rank_columns, *detail_columns], filename)
+
 if __name__ == "__main__":
     edges = get_mutual_friends_edges(relations)
     save_mutual_friends(edges, mutual_friends_file)
@@ -60,6 +76,7 @@ if __name__ == "__main__":
     drawer = DrawDistribution(edges, measure='pagerank')
     drawer.filter_nodes(0.3)
     nodes = drawer.get_nodes()
-    save_hub_persons(nodes, hub_users_file)
+    save_hub_persons(nodes, hub_users_csv)
+    save_hub_details(hub_details_csv)
     drawer.plot_networkx()
     drawer.plot_rank_pdf_cdf()

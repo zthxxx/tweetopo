@@ -60,3 +60,4 @@ if __name__ == "__main__":
     # start_crawling_relation(tokens, unfounds)
     # db.relation.export_relation('twitter_relations.json')
     crawl_detail_from_hub()
+    db.person.export_persons('hub_persons.json')
