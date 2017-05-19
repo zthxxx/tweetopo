@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import os
 from random import randint
+from datetime import datetime
 from database import person
 
 store = person.people_save
@@ -17,6 +18,7 @@ info = {
     "fullname": "Test Full name",
     "uid": uid_base,
     "description": "This people info for unit test.",
+    "sign_at": datetime.now(),
     "protect": False,
     "friends_count": 4,
     "location": "Chicago",

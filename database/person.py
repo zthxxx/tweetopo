@@ -54,5 +54,8 @@ def export_persons(uids, filename, limit=0):
             column: people.get(column) for column in columns
         } for people in cour
     }
+    for people in persons.values():
+        if 'sign_at' in people:
+            people['sign_at'] = str(people['sign_at'])
     conffor.dump(filename, persons, None)
     logging.info('Export all person info complete.')
