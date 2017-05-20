@@ -6,6 +6,7 @@ from twitter.tweeapi import Twitter
 from twitter.tweeapi import multi_tweecrawl
 from conffor import conffor
 import database as db
+from analyse_topology import get_hub_uids, hub_users_csv
 
 relate_store = db.relation.people_save
 relate_query = db.relation.people_find
@@ -58,16 +59,20 @@ def start_crawling_people_details(tokens, unfounds):
     multi_tweecrawl(tokens, unfounds, callback=store_people_details)
 
 def crawl_detail_from_hub():
-    from analyse_topology import hub_users_csv, read_hub_persons
-    hub_persons = read_hub_persons(hub_users_csv)
-    hub_uids = {int(person[0]) for person in hub_persons}
+    hub_uids = get_hub_uids()
     founds = db.person.get_uids()
     unfounds = get_unfound_queue(hub_uids, founds)
     start_crawling_people_details(tokens, unfounds)
+
+def export_hub_persons(filename):
+    hub_uids = get_hub_uids(hub_users_csv)
+    db.person.export_persons(filename, uids=list(hub_uids))
 
 if __name__ == "__main__":
     unfounds = get_crawl_queue(seed_name)
     start_crawling_relation(tokens, unfounds)
     db.relation.export_relation('twitter_relations.json', seed_name=seed_name)
+
     # crawl_detail_from_hub()
-    # db.person.export_persons('hub_persons.json')
+
+    # export_hub_persons('hub_persons.json')

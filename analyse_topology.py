@@ -54,6 +54,14 @@ def read_hub_persons(filename):
     columns = ['uid', 'degree', 'pagerank', 'clustering']
     return csv.read_list_csv(columns, filename)
 
+def get_hub_uids(filename):
+    columns = ['uid', 'degree', 'pagerank', 'clustering']
+    hub_persons = read_hub_persons(filename)
+    uid_col = columns.index('uid')
+    hub_uids = {int(person[uid_col]) for person in hub_persons}
+    return hub_uids
+
+
 def save_hub_details(filename):
     detail_cols = ['name', 'fullname', 'description', 'sign_at', 'location','time_zone',
                    'friends_count', 'followers_count', 'statuses_count', 'url', 'protect', 'verified']
@@ -81,5 +89,7 @@ if __name__ == "__main__":
     nodes = drawer.get_nodes()
     save_hub_persons(nodes, hub_users_csv)
     drawer.plot_networkx()
+    drawer.get_measures()
     drawer.plot_rank_pdf_cdf()
-    save_hub_details(hub_details_csv)
+
+    # save_hub_details(hub_details_csv)
