@@ -46,18 +46,18 @@ def start_crawling_people_details(tokens, unfounds):
     multi_tweecrawl(tokens, unfounds, callback=store_people_details)
 
 def crawl_detail_from_hub():
-    from analyse_topology import hub_users_file, read_hub_persons
-    hub_persons = read_hub_persons(hub_users_file)
+    from analyse_topology import hub_users_csv, read_hub_persons
+    hub_persons = read_hub_persons(hub_users_csv)
     hub_uids = {int(person[0]) for person in hub_persons}
     founds = db.person.get_uids()
     unfounds = get_unfound_queue(hub_uids, founds)
     start_crawling_people_details(tokens, unfounds)
 
 if __name__ == "__main__":
-    # people = get_seed_people(seed_name)
-    # founds = set(db.relation.get_uids())
-    # unfounds = get_unfound_queue(people.friends, founds)
-    # start_crawling_relation(tokens, unfounds)
-    # db.relation.export_relation('twitter_relations.json')
+    people = get_seed_people(seed_name)
+    founds = set(db.relation.get_uids())
+    unfounds = get_unfound_queue(people.friends, founds)
+    start_crawling_relation(tokens, unfounds)
+    db.relation.export_relation('twitter_relations.json')
     crawl_detail_from_hub()
-    db.person.export_persons('hub_persons.json')
+    db.person.export_persons(None, 'hub_persons.json')

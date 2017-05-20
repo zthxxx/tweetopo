@@ -113,7 +113,7 @@ class DrawDistribution(GraphAnalysis):
     def edges_color(self, edges):
         return [self.edge_color(edge) for edge in edges]
 
-    def plot_networkx(self, with_label=False):
+    def plot_networkx(self, with_label=False, block=True):
         nx.draw_networkx_edges(
             self.G, self.pos,
             edge_color=self.edges_color(self.G.edges()),
@@ -134,20 +134,20 @@ class DrawDistribution(GraphAnalysis):
             alpha=0.85
         )
         plt.axis('off')
-        plt.show()
+        plt.show(block=block)
         plt.clf()
 
-    def plot_pdf(self, signal):
+    def plot_pdf(self, signal, block=True):
         plt.hist(signal, len(signal)*2)
-        plt.show(block=False)
+        plt.show(block=block)
         plt.clf()
 
-    def plot_cdf(self, signal):
+    def plot_cdf(self, signal, block=True):
         plt.hist(signal, len(signal)*2, cumulative=True, histtype='step')
-        plt.show()
+        plt.show(block=block)
         plt.clf()
 
-    def plot_rank_pdf_cdf(self):
+    def plot_rank_pdf_cdf(self, block=True):
         signal = list(self.ranks.values())
-        self.plot_pdf(signal)
-        self.plot_cdf(signal)
+        self.plot_pdf(signal, block=block)
+        self.plot_cdf(signal, block=block)

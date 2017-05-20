@@ -55,18 +55,21 @@ def read_hub_persons(filename):
     return csv.read_list_csv(columns, filename)
 
 def save_hub_details(filename):
-    rank_columns = ['uid', 'degree', 'pagerank', 'clustering']
-    detail_columns = ['name', 'fullname', 'description', 'sign_at', 'location',
-               'time_zone', 'friends_count', 'followers_count', 'statuses_count', 'url', 'protect', 'verified']
+    detail_cols = ['name', 'fullname', 'description', 'sign_at', 'location','time_zone',
+                   'friends_count', 'followers_count', 'statuses_count', 'url', 'protect', 'verified']
+    titles = ['ID', '度中心性', 'pagerank', '群聚系数', '用户名', '用户全名', '个人描述', '注册时间',
+              '位置', '时区', '正在关注数', '关注者数', '推文数量', '个人页面', '是否保护', '是否认证']
     persons_db = conffor.load(hub_users_json)
     persons_list = read_hub_persons(hub_users_csv)
     details = []
+
     for person in persons_list:
         uid, *ranks = person
+        uid = str(int(uid))
         if uid in persons_db:
-            data = [persons_db[uid].get(column) for column in detail_columns]
-            details.append((uid, *ranks, *data))
-    csv.save_list_csv(details, [*rank_columns, *detail_columns], filename)
+            datas = [persons_db[uid].get(column) for column in detail_cols]
+            details.append((uid, *ranks, *datas))
+    csv.save_list_csv(details, titles, filename)
 
 if __name__ == "__main__":
     edges = get_mutual_friends_edges(relations)
@@ -77,6 +80,6 @@ if __name__ == "__main__":
     drawer.filter_nodes(0.3)
     nodes = drawer.get_nodes()
     save_hub_persons(nodes, hub_users_csv)
-    save_hub_details(hub_details_csv)
     drawer.plot_networkx()
     drawer.plot_rank_pdf_cdf()
+    save_hub_details(hub_details_csv)

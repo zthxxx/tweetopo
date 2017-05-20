@@ -34,7 +34,7 @@ $ packages="conffor, database, logsetting, twitter"
 $ python -m nose -w . -vs --with-coverage --cover-package="$packages"
 ```
 
-**Note:** database test need **MongoDB** and config in test package as `xxx-unit.json`; twitter test need key and token which configured in `tweetconf.json`.
+**Note:** database test need **MongoDB** and config in test package as `db_unit_test.json`; twitter test need key and token which configured in `tweetconf.json`.
 
 ## License
 
