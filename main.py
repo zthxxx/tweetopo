@@ -34,9 +34,21 @@ def get_seed_people(seed_name):
 
 def get_unfound_queue(friends, founds):
     unfound_set = set(friends) - set(founds)
+    logging.info('Remaining amount of people is %d' % len(unfound_set))
     unfounds = queue.Queue()
     for uid in unfound_set:
         unfounds.put(uid)
+    return unfounds
+
+def get_crawl_queue(seed_name):
+    friends = []
+    founds = set(db.relation.get_uids())
+    if not isinstance(seed_name, list):
+        seed_name = [seed_name]
+    for seed in seed_name:
+        people = get_seed_people(seed)
+        friends.extend(people.friends)
+    unfounds = get_unfound_queue(friends, founds)
     return unfounds
 
 def start_crawling_relation(tokens, unfounds):
@@ -54,10 +66,8 @@ def crawl_detail_from_hub():
     start_crawling_people_details(tokens, unfounds)
 
 if __name__ == "__main__":
-    people = get_seed_people(seed_name)
-    founds = set(db.relation.get_uids())
-    unfounds = get_unfound_queue(people.friends, founds)
+    unfounds = get_crawl_queue(seed_name)
     start_crawling_relation(tokens, unfounds)
-    db.relation.export_relation('twitter_relations.json')
-    crawl_detail_from_hub()
-    db.person.export_persons(None, 'hub_persons.json')
+    db.relation.export_relation('twitter_relations.json', seed_name=seed_name)
+    # crawl_detail_from_hub()
+    # db.person.export_persons('hub_persons.json')

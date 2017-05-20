@@ -65,7 +65,7 @@ def get_person_uids_test():
 def export_person_collection_test():
     index = uid_base
     uids = [index + i for i in range(0, PERSON_LENGTH)]
-    person.export_persons(uids, EXPORT_STORE_FILE, limit=10)
+    person.export_persons(EXPORT_STORE_FILE, uids, limit=10)
 
 def person_del_all_test():
     for people in Person.objects():

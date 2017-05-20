@@ -45,6 +45,9 @@ class Twitter():
             user = self._api.get_user(user_id=uid, screen_name=name)
         except tweepy.TweepError as e:
             logging.error(e)
+            if e.api_code == 326:
+                # this account is temporarily locked.
+                return self
             raise e
         self._user = user
         return self
@@ -139,7 +142,7 @@ def multi_tweecrawl(tokens, uids_queue, block=True, **kwargs):
     tasks = []
     for index, token in enumerate(tokens):
         twitter = Twitter(**token)
-        task = Thread(target=thread_from_queue, args=(index+1, twitter), kwargs=kwargs)
+        task = Thread(name='Theading-%d'%(index+1) , target=thread_from_queue, args=(index+1, twitter), kwargs=kwargs)
         tasks.append(task)
         task.start()
     logging.info('Twitter tasks all started!')

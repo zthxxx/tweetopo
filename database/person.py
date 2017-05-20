@@ -41,7 +41,7 @@ def get_uids():
     uids = {people.get('_id') for people in uidcour}
     return uids
 
-def export_persons(uids, filename, limit=0):
+def export_persons(filename, uids=None, limit=0):
     columns = ['name', 'fullname', 'description', 'sign_at', 'location',
                'time_zone', 'friends_count', 'followers_count', 'statuses_count', 'url', 'protect', 'verified']
     person = Person._get_collection()

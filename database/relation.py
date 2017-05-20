@@ -38,8 +38,14 @@ def export_relation(filename, seed_name=None, limit=0):
     person = Relation._get_collection()
     query_obj = {}
     if seed_name:
-        people = people_find(name=seed_name)
-        query_obj['_id'] = {'$in': people.friends}
+        uids = []
+        if not isinstance(seed_name, list):
+            seed_name = [seed_name]
+        for name in seed_name:
+            people = people_find(name=name)
+            uids.append(people.uid)
+            uids.extend(people.friends)
+        query_obj['_id'] = {'$in': uids}
     cour = person.find(query_obj, {"_id": 1, "friends":1}).limit(limit)
     for people in cour:
         persons[people['_id']] = people["friends"]

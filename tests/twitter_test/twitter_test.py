@@ -8,7 +8,10 @@ from twitter.tweeapi import multi_tweecrawl
 conf_file = './tweetconf.json'
 config = conffor.load(conf_file)
 seed_name = config['seed_name']
+if isinstance(seed_name, list):
+    seed_name = seed_name[0]
 tokens = config["twitter"]
+
 twitter = None
 uids_queue = queue.Queue()
 seed_user_uid = None
@@ -56,7 +59,7 @@ def store_user_relation_test():
 def store_user_details_test():
     def store_simulate(
         uid, name, fullname, description, sign_at, location,
-        time_zone, friends_count, followers_count, 
+        time_zone, friends_count, followers_count,
         statuses_count, url, protect, verified
     ):
         global seed_user_uid
