@@ -59,7 +59,7 @@ def start_crawling_people_details(tokens, unfounds):
     multi_tweecrawl(tokens, unfounds, callback=store_people_details)
 
 def crawl_detail_from_hub():
-    hub_uids = get_hub_uids()
+    hub_uids = get_hub_uids(hub_users_csv)
     founds = db.person.get_uids()
     unfounds = get_unfound_queue(hub_uids, founds)
     start_crawling_people_details(tokens, unfounds)
