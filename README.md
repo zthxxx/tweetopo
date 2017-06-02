@@ -25,6 +25,16 @@ Strong (warm, red)   ------>    Weak (cool, blue)
 
 ![hot_to_cold_map](./document/screenshot/hot_to_cold_map.png)
 
+Zoom in two communities separately to analyse. As show below, this is a relationship distribution heatmap which consist of the **irrelevant** seed user's friends. The user have numerous followings, but between each followings almost have no intersection, and clustering rank value is very low overall. So the distribution is scattered, sign that these friends are not in a "Circle of Friend".
+
+![sparse_community](./document/screenshot/sparse_community.jpg)
+
+Zoom in another side, as show below, this distribution consist of the two **relevant** seed user's friends. Not only are the two user each especial relevance, but also most of their friends are each close relation, they are obvious in a "Circle of Friend", and these are the target of our research.
+
+![intensive_community](./document/screenshot/intensive_community.jpg)
+
+In the above, there are many blue node (sign that low-level relevance) around the border of bunching core, these aren't  the target of our research.
+
 
 
 ## Usage
@@ -73,27 +83,27 @@ $ python -m nose -w . -vs --with-coverage --cover-package="$packages"
 File struct:
 
 ```shell
-tweetopo/		# root directory
+tweetopo/       # root directory
 │
-├─ document/	# doc and image
+├─ document/    # doc and image
 │
-├─ twitter/		# twitter spider with tweepy
+├─ twitter/     # twitter spider with tweepy
 │
-├─ netgraph/	# graph struct process and data visualization
+├─ netgraph/    # graph struct process and data visualization
 │
-├─ database/	# package for database operate
+├─ database/    # package for database operate
 │
-├─ conffor/		# package for config and csv operate
+├─ conffor/     # package for config and csv operate
 │
-├─ logsetting/	# package for log system setting
+├─ logsetting/  # package for log system setting
 │
-├─ tests/		# unit test
+├─ tests/       # unit test
 │
 ├─ README.md
 ├─ requirements.txt
-├─ tweetconf.json	# config file
-├─ main.py		# entry of data spider and db operator
-└─ analyse_topology.py	# entry of data analyse, csv record, draw picture
+├─ tweetconf.json   # config file
+├─ main.py          # entry of data spider and db operator
+└─ analyse_topology.py  # entry of data analyse, csv record, draw picture
 ```
 
 The `main.py` is entry of twitter spider for get data, and database operate for store and export data.
