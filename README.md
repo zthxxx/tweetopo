@@ -35,6 +35,20 @@ Zoom in another side, as show below, this distribution consist of the two **rele
 
 In the above, there are many blue node (sign that low-level relevance) around the border of bunching core, these aren't  the target of our research.
 
+In order to find the **"core"** of the community bunching, I have tried seven or more kinds algorithms for measure, then the three algorithms with good results in the experiment are retained. They are **`Degree Centrality`, `Pagerank`, `Clustering Coefficient`**. Every  measure algorithm will filter nodes which rank value  greater than designated threshold (0 to 1).
+
+To show the effect, let's choose only **one target** user's all friends, plot distribution and filter core.
+
+As show below, it's **all friends** distribution heatmap:
+
+![one_seed_pagerank_heatmap](./document/screenshot/one_seed_pagerank_heatmap.jpg)
+
+Filter **core nodes** whitch rank value greater than 0.3 through `pagerank` as show below:
+
+![pagerank_filter_less_0.3](./document/screenshot/pagerank_filter_less_0.3.jpg)
+
+Mostly achieve the basic project.
+
 
 
 ## Usage
