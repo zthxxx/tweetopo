@@ -52,12 +52,14 @@ class GraphAnalysis:
         rank = self.ranks[node] / self.max_rank
         return rank
 
-    def filter_nodes(self, gate):
+    def filter_ranks(self, gate):
         '''
         delete some micro node which measure under the threshold
         :param gate: gate is a normalized threshold value from 0 to 1,
                      will filtered node out which measure less than it.
         '''
+        if not gate:
+            return
         deserts = [node for node in self.G.nodes()
                        if self.node_rank(node) < gate]
         self.G.remove_nodes_from(deserts)

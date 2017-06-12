@@ -11,6 +11,10 @@
   "seed_name": [
     "SEED_NAME"
   ],
+  "distribute": {
+    "measure": "pagerank",
+    "threshold": false
+  },
   "mongo": {
     "host": "127.0.0.1",
     "port": 27017,

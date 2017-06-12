@@ -89,9 +89,9 @@ class Twitter():
                 "name": user.screen_name,
                 "uid": user.id,
                 "protect": user.protected,
-                "friends_count": user.friends_count
+                "friends_count": user.friends_count,
+                "friends": friends
             }
-            people["friends"] = friends
             store(**people)
 
     @authentication
@@ -118,10 +118,10 @@ class Twitter():
 def multi_tweecrawl(tokens, uids_queue, block=True, **kwargs):
     '''
     multi-threading for crawl twitter api with users id
-    :param tokens:
-    :param uids_queue:
-    :param block:
-    :param kwargs:
+    :param tokens: some twitter api tokens
+    :param uids_queue: Queue of user ids
+    :param block: is block for crawling
+    :param kwargs: kwargs of thead (callback)
     :return:
     '''
     def thread_from_queue(index, twitter, callback=None):
