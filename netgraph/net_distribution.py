@@ -5,6 +5,7 @@ import networkx as nx
 import matplotlib.pyplot as plt
 import matplotlib.colors as colors
 
+
 class GraphAnalysis:
     def __init__(self, edges, measure='pagerank'):
         '''
@@ -13,43 +14,47 @@ class GraphAnalysis:
         :param measure: what measure for analysis to filter,
                         must be one of  'degree' or 'pagerank' or 'clustering'
         '''
+        self.measures = ['degree', 'pagerank', 'clustering']
         self.measure = measure
+        self.ranks = {}
         self.G = nx.Graph()
         self.import_data(edges)
 
     def import_data(self, edges):
         self.G.add_weighted_edges_from(edges)
-        self.pos = nx.spring_layout(self.G, iterations=100)
-        self.get_measures()
 
     def get_degrees(self):
-        self.degrees = dict(nx.degree(self.G))
-        self.max_degree = max(self.degrees.values())
+        degrees = dict(nx.degree(self.G))
+        max_degree = max(degrees.values())
+        return degrees, max_degree
 
     def get_pageranks(self):
-        self.pageranks = nx.pagerank(self.G)
-        self.max_pagerank = max(self.pageranks.values())
+        pageranks = nx.pagerank(self.G)
+        max_pagerank = max(pageranks.values())
+        return pageranks, max_pagerank
 
     def get_clusterings(self):
-        self.clusterings = nx.clustering(self.G)
-        self.max_clustering = max(self.clusterings.values())
+        clusterings = nx.clustering(self.G)
+        max_clustering = max(clusterings.values())
+        return clusterings, max_clustering
 
     def get_measures(self):
-        self.get_degrees()
-        self.get_pageranks()
-        self.get_clusterings()
-        measures = {'degree': (self.degrees, self.max_degree),
-                    'pagerank': (self.pageranks, self.max_pagerank),
-                    'clustering': (self.clusterings, self.max_clustering)}
-        if self.measure in measures:
-            self.ranks, self.max_rank = measures[self.measure]
+        if self.measure not in self.measures:
+            raise nx.NetworkXError('The measure is not appointed correct.')
+        for measure in self.measures:
+            get_measures = getattr(self, 'get_%ss' % measure)
+            ranks, max_rank = get_measures()
+            self.ranks[measure] = {'ranks': ranks, 'max': max_rank}
 
-    def node_rank(self, node):
+    def node_rank(self, node, measure=None):
         '''
         :param n:  node
         :return: Normalized value from 0 to 1, mean that the rank of the node
         '''
-        rank = self.ranks[node] / self.max_rank
+        if measure is None:
+            measure = self.measure
+        ranks = self.ranks[measure]
+        rank = ranks['ranks'][node] / ranks['max']
         return rank
 
     def filter_ranks(self, gate):
@@ -61,19 +66,23 @@ class GraphAnalysis:
         if not gate:
             return
         deserts = [node for node in self.G.nodes()
-                       if self.node_rank(node) < gate]
+                   if self.node_rank(node) < gate]
         self.G.remove_nodes_from(deserts)
 
     def get_nodes(self):
         nodes = self.G.nodes()
-        users = [(n , self.degrees[n], self.pageranks[n], self.clusterings[n])  for n in nodes]
+        users = [(n, *[self.node_rank(n, measure) for measure in self.measures]) for n in nodes]
         return users
+
 
 class DrawDistribution(GraphAnalysis):
     MIN_NODE_SIZE = 20
     MAX_NODE_SIZE = 360
+
     def __init__(self, edges, **kwargs):
         super().__init__(edges, **kwargs)
+        self.pos = nx.spring_layout(self.G, iterations=100)
+        self.get_measures()
 
     def node_size(self, n):
         rank = self.node_rank(n)
@@ -106,10 +115,9 @@ class DrawDistribution(GraphAnalysis):
         return [self.node_color(n) for n in nodes]
 
     def edge_color(self, edge):
-        degrees = self.degrees
         node1 = edge[0]
         node2 = edge[1]
-        node = node1 if degrees[node1] < degrees[node2] else node2
+        node = node1 if self.node_rank(node1) < self.node_rank(node2) else node2
         return self.node_color(node)
 
     def edges_color(self, edges):
@@ -140,16 +148,17 @@ class DrawDistribution(GraphAnalysis):
         plt.clf()
 
     def plot_pdf(self, signal, block=True):
-        plt.hist(signal, len(signal)*2)
+        plt.hist(signal, len(signal) * 2)
         plt.show(block=block)
         plt.clf()
 
     def plot_cdf(self, signal, block=True):
-        plt.hist(signal, len(signal)*2, cumulative=True, histtype='step')
+        plt.hist(signal, len(signal) * 2, cumulative=True, histtype='step')
         plt.show(block=block)
         plt.clf()
 
     def plot_rank_pdf_cdf(self, block=True):
-        signal = list(self.ranks.values())
+        nodes = self.G.nodes()
+        signal = [self.node_rank(node) for node in nodes]
         self.plot_pdf(signal, block=block)
         self.plot_cdf(signal, block=block)

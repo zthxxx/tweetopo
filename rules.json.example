@@ -1,0 +1,7 @@
+{
+  "keywords": [],
+  "pickup": {
+    "measure": "degree",
+    "threshold": 0.5
+  }
+}

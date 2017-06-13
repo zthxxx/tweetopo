@@ -3,6 +3,9 @@ import logging
 from mongoengine import *
 from conffor import conffor
 
+PERSON_FIELD = ['name', 'fullname', 'description', 'sign_at', 'location', 'time_zone',
+               'friends_count', 'followers_count', 'statuses_count', 'url', 'protect', 'verified']
+
 class Person(Document):
     name = StringField()
     fullname = StringField()
@@ -42,8 +45,7 @@ def get_uids():
     return uids
 
 def export_persons(filename, uids=None, limit=0):
-    columns = ['name', 'fullname', 'description', 'sign_at', 'location',
-               'time_zone', 'friends_count', 'followers_count', 'statuses_count', 'url', 'protect', 'verified']
+    columns = PERSON_FIELD
     person = Person._get_collection()
     query_obj = {}
     if uids:
