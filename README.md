@@ -113,11 +113,15 @@ tweetopo/       # root directory
 │
 ├─ tests/       # unit test
 │
+├─ uitls/       # uitl code snippets
+│
+├─ scripts/     # splited scripts for operation
+│
 ├─ README.md
 ├─ requirements.txt
+├─ rules.json       # focus filter rules
 ├─ tweetconf.json   # config file
-├─ main.py          # entry of data spider and db operator
-└─ analyse_topology.py  # entry of data analyse, csv record, draw picture
+└─ main.py          # entry for run scripts
 ```
 
 The `main.py` is entry of twitter spider for get data, and database operate for store and export data.
@@ -134,7 +138,8 @@ The `main.py` is entry of twitter spider for get data, and database operate for 
 6. draw net graph, PDF, CDF
 7. crawl and store twitter user details data with `hub persons` uid list
 8. export db person to `hub_persons.json` with `hub persons` uid list
-9. merge hub list and details data to `hub_details.csv`
+9. filter focus user which hit select rules to `focus_hub.csv`
+10. merge hub list and details data to `hub_details.csv`
 
 The result `hub_details.csv` record people`s uid, name, 3 measure ranks, lcation, description and other account details information.
 

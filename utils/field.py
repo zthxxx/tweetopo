@@ -1,18 +1,25 @@
 # -*- coding: utf-8 -*-
-from conffor import csvtor as csv
+from os import path
+from conffor import conffor, csvtor as csv
 from database.person import PERSON_FIELD
+from .config import config as _config
 
 _RELATION_FILE = '_twitter_relations.json'
 _MUTUAL_FRIENDS_FILE = '_mutual_friends.csv'
 _HUB_USERS_CSV = '_hub_persons.csv'
 _HUB_USERS_JSON = '_hub_persons.json'
+_FOCUS_USERS_CSV = '_focus_hub.csv'
+_FIELD_LANGUAGE_JSON = path.join('field_languages', '%s.json')
 _HUB_DETAILS_CSV = '_hub_details.csv'
 
 _MUTUAL_FRIENDS_COLUMNS = ['user', 'friend', 'weight']
 _HUB_USERS_COLUMNS = ['uid', 'degree', 'pagerank', 'clustering']
 _HUB_DETAILS_COLUMNS = PERSON_FIELD
-_HUB_DETAILS_TITLES = ['ID', '度中心性', 'pagerank', '群聚系数', '用户名', '用户全名', '个人描述', '注册时间',
-                       '位置', '时区', '正在关注数', '关注者数', '推文数量', '个人页面', '是否保护', '是否认证']
+_FOCUS_USERS_COLUMNS = ['uid', 'rule']
+
+_language = _config['field_language']
+_language_file = path.join(path.dirname(__file__), _FIELD_LANGUAGE_JSON % _language)
+fields = conffor.load(_language_file)
 
 
 def read_hub_persons():

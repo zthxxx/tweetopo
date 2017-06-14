@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import logsetting
-from scripts import crawling_relation, export_relation, \
-    mutual_friends, select_hub, crawling_detail, export_persons, merge_detail
+from scripts import crawling_relation, export_relation, mutual_friends, \
+    select_hub, crawling_detail, export_persons, hit_rules, merge_detail
 
 # see workflow more details in README
 if __name__ == "__main__":
@@ -11,4 +11,5 @@ if __name__ == "__main__":
     select_hub.run()
     crawling_detail.run()
     export_persons.run()
+    hit_rules.run()
     merge_detail.run()

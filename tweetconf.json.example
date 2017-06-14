@@ -21,5 +21,6 @@
     "database": "tweetopo",
     "user": "MONGO_USER",
     "passwd": "MONGO_PASSWD"
-  }
+  },
+  "field_language": "en"
 }

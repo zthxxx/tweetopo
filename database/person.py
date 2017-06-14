@@ -3,13 +3,13 @@ import logging
 from mongoengine import *
 from conffor import conffor
 
-PERSON_FIELD = ['name', 'fullname', 'description', 'sign_at', 'location', 'time_zone',
+PERSON_FIELD = ['uid', 'name', 'fullname', 'description', 'sign_at', 'location', 'time_zone',
                'friends_count', 'followers_count', 'statuses_count', 'url', 'protect', 'verified']
 
 class Person(Document):
+    uid = IntField(required=True, primary_key=True)
     name = StringField()
     fullname = StringField()
-    uid = IntField(required=True, primary_key=True)
     description = StringField()
     sign_at = DateTimeField()
     location = StringField()

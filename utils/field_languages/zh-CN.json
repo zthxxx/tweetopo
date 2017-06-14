@@ -1,0 +1,19 @@
+{
+  "uid": "ID",
+  "degree": "度中心性",
+  "pagerank": "pagerank",
+  "clustering": "群聚系数",
+  "rule": "匹配规则",
+  "name": "用户名",
+  "fullname": "用户全名",
+  "description": "个人描述",
+  "sign_at": "注册时间",
+  "location": "位置",
+  "time_zone": "时区",
+  "friends_count": "正在关注数",
+  "followers_count": "关注者数",
+  "statuses_count": "推文数量",
+  "url": "个人页面",
+  "protect": "是否保护",
+  "verified": "是否认证"
+}

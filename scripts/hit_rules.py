@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
-from conffor import conffor
-from utils.field import get_hub_uids, _RELATION_FILE, _HUB_USERS_JSON
+import logging
+from conffor import conffor, csvtor as csv
+from utils.field import get_hub_uids, _RELATION_FILE, _HUB_USERS_JSON, \
+    _FOCUS_USERS_CSV, _FOCUS_USERS_COLUMNS
 from utils.focus import pickup, match_focus
 
 persons_data = conffor.load(_HUB_USERS_JSON)
@@ -37,9 +39,25 @@ def pick_degree(hits, omissions, threshold):
 
 
 def fill_leak():
+    hubs = get_hub_uids()
     hits = hit_focus()
-    omissions = get_hub_uids() - hits
+    omissions = hubs - hits
+    logging.info('Hubs count: %d, hits in rule: %d, omits: %d' % (len(hubs), len(hits), len(omissions)))
     picks = set()
     if pickup["measure"] == "degree":
         picks = pick_degree(hits, omissions, pickup["threshold"])
-    return hits | picks
+    logging.info('Re pick up count: %d' % len(picks))
+    return hits, picks
+
+
+def save_focus():
+    hits, picks = fill_leak()
+    focus = [(uid, 'key') for uid in hits]
+    focus.extend([(uid, 'pick') for uid in picks])
+    columns = _FOCUS_USERS_COLUMNS
+    csv.save_list_csv(focus, columns, _FOCUS_USERS_CSV)
+    logging.info('Save focus hub csv complete')
+
+
+def run():
+    save_focus()

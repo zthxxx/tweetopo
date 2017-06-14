@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import logging
 from conffor import conffor, csvtor as csv
 from utils.field import _RELATION_FILE, _MUTUAL_FRIENDS_FILE, _MUTUAL_FRIENDS_COLUMNS
 
@@ -35,6 +36,7 @@ def get_mutual_friends_edges(relations):
 def save_mutual_friends(edges, filename):
     columns = _MUTUAL_FRIENDS_COLUMNS
     csv.save_list_csv(edges, columns, filename)
+    logging.info('Save mutual friends csv complete')
 
 
 def run():

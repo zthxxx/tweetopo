@@ -11,3 +11,4 @@ venv/
 *.csv
 *.json
 !*unit_test.json
+!**/*_languages/*.json

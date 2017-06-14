@@ -1,0 +1,19 @@
+{
+  "uid": "ID",
+  "degree": "Degree Centrality",
+  "pagerank": "Pagerank",
+  "clustering": "Clustering Coefficient",
+  "rule": "Match Rule",
+  "name": "Screen Name",
+  "fullname": "Full Name",
+  "description": "Description",
+  "sign_at": "Created Time",
+  "location": "Location",
+  "time_zone": "Time Zone",
+  "friends_count": "Followings",
+  "followers_count": "Followers",
+  "statuses_count": "Tweet Number",
+  "url": "URL",
+  "protect": "Is Protect",
+  "verified": "Is Verified"
+}
