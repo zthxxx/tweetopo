@@ -70,11 +70,13 @@ $ pip install -r requirements.txt
 
 ### config
 
-Then change the config file for **your own info**,
+Then change the config file for **your own info**, and institute rules of how to focus.
 
 ```bash
 $ cp tweetconf.json.example tweetconf.json
 $ vim tweetconf.json
+$ cp rules.json.example rules.json
+$ vim rules.json
 ```
 
 In the config json file, you need set `twitter tokens` and `mongo connetion` and `seed user`.
@@ -86,7 +88,7 @@ In the config json file, you need set `twitter tokens` and `mongo connetion` and
 Before run the project, you can get **unit test** at first, it used `nose`, a unit testing framework of python. 
 
 ```bash
-$ packages="conffor, database, logsetting, twitter"
+$ packages="conffor, database, logsetting, netgraph, twitter"
 $ python -m nose -w . -vs --with-coverage --cover-package="$packages"
 ```
 
