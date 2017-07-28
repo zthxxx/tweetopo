@@ -5,6 +5,8 @@ from threading import Thread
 import tweepy
 from retrying import retry
 
+_FRIENDS_COUNT_MAX_ = 10000
+
 class Twitter():
     def __init__(self,
         consumer_key, consumer_secret,
@@ -66,6 +68,10 @@ class Twitter():
     def get_friends(self, callback, pages_limit=0):
         api = self._api
         user = self._user
+        if user.friends_count > _FRIENDS_COUNT_MAX_:
+            logging.warning('The user [%d]-[%s] has too many [%d] friends!'
+                            % (user.id, user.screen_name, user.friends_count))
+            return
         cursor = tweepy.Cursor(api.friends_ids, user_id=user.id, screen_name=user.screen_name)
         friends = []
         try:
@@ -141,6 +147,8 @@ def multi_tweecrawl(tokens, uids_queue, block=True, **kwargs):
 
     tasks = []
     for index, token in enumerate(tokens):
+        if uids_queue.empty() or uids_queue.qsize() < index + 1:
+            break
         twitter = Twitter(**token)
         task = Thread(name='Theading-%d'%(index+1) , target=thread_from_queue, args=(index+1, twitter), kwargs=kwargs)
         tasks.append(task)
