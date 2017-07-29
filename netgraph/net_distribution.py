@@ -147,12 +147,14 @@ class DrawDistribution(GraphAnalysis):
         plt.show(block=block)
         plt.clf()
 
-    def plot_pdf(self, signal, block=True):
+    @classmethod
+    def plot_pdf(cls, signal, block=True):
         plt.hist(signal, len(signal) * 2)
         plt.show(block=block)
         plt.clf()
 
-    def plot_cdf(self, signal, block=True):
+    @classmethod
+    def plot_cdf(cls, signal, block=True):
         plt.hist(signal, len(signal) * 2, cumulative=True, histtype='step')
         plt.show(block=block)
         plt.clf()

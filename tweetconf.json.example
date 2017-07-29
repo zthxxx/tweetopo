@@ -11,6 +11,10 @@
   "seed_name": [
     "SEED_NAME"
   ],
+  "secondouts": {
+    "repetition_CDF": true,
+    "threshold": 0.1
+  },
   "distribute": {
     "measure": "pagerank",
     "threshold": false

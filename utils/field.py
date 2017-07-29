@@ -5,6 +5,7 @@ from database.person import PERSON_FIELD
 from .config import config as _config
 
 _RELATION_FILE = '_twitter_relations.json'
+_SECONDOUTS_CSV = '_secondouts.csv'
 _MUTUAL_FRIENDS_FILE = '_mutual_friends.csv'
 _HUB_USERS_CSV = '_hub_persons.csv'
 _HUB_USERS_JSON = '_hub_persons.json'
@@ -12,6 +13,7 @@ _FOCUS_USERS_CSV = '_focus_hub.csv'
 _FIELD_LANGUAGE_JSON = path.join('field_languages', '%s.json')
 _HUB_DETAILS_CSV = '_hub_details.csv'
 
+_SECONDOUTS_COLUMNS = ['uid', 'repeats']
 _MUTUAL_FRIENDS_COLUMNS = ['user', 'friend', 'weight']
 _HUB_USERS_COLUMNS = ['uid', 'degree', 'pagerank', 'clustering']
 _HUB_DETAILS_COLUMNS = PERSON_FIELD
