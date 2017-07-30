@@ -21,7 +21,7 @@ def plot_counter_cdf(counter):
 
 
 def secondouts_select(relations, counter, pass_threshold):
-    firstouts = set(int(key) for key in relations.keys())
+    firstouts = {int(key) for key in relations.keys()}
     logging.info('FirstOut friends of seeds have %d people.' % len(firstouts))
     pass_count = len(firstouts) * pass_threshold
     secondouts = [(uid, count) for uid, count in counter.items()

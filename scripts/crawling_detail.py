@@ -2,7 +2,7 @@
 from twitter.tweeapi import multi_tweecrawl
 from utils import _config
 from utils.db import db, confirm_unfound_queue
-from utils.field import get_hub_uids
+from utils.field import get_hub_uids, get_secondouts_uids
 
 detail_store = db.person.people_save
 
@@ -20,8 +20,9 @@ def start_crawling_people_details(tokens, unfounds):
 
 def crawl_detail_from_hub():
     hub_uids = get_hub_uids()
+    secondout_uids = get_secondouts_uids()
     founds = db.person.get_uids()
-    unfounds = confirm_unfound_queue(hub_uids, founds)
+    unfounds = confirm_unfound_queue(hub_uids | secondout_uids, founds)
     start_crawling_people_details(tokens, unfounds)
 
 

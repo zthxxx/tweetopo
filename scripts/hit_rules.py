@@ -42,11 +42,11 @@ def fill_leak():
     hubs = get_hub_uids()
     hits = hit_focus()
     omissions = hubs - hits
-    logging.info('Hubs count: %d, hits in rule: %d, omits: %d' % (len(hubs), len(hits), len(omissions)))
+    logging.info('Firstout hubs count: %d, hits in rule: %d, omits: %d' % (len(hubs), len(hits & hubs), len(omissions)))
     picks = set()
     if pickup["measure"] == "degree":
         picks = pick_degree(hits, omissions, pickup["threshold"])
-    logging.info('Re pick up count: %d' % len(picks))
+    logging.info('Re pick up firstouts total of %d' % len(picks))
     return hits, picks
 
 

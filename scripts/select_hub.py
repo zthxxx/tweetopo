@@ -29,7 +29,8 @@ def run():
     nodes = drawer.get_nodes()
     save_hub_persons(nodes, _HUB_USERS_CSV)
 
-    logging.info('Ready to plot distribution map ...')
-    drawer.plot_networkx()
-    drawer.get_measures()
-    drawer.plot_rank_pdf_cdf()
+    if distribute['plot_graph']:
+        logging.info('Ready to plot distribution map ...')
+        drawer.plot_networkx()
+        drawer.get_measures()
+        drawer.plot_rank_pdf_cdf()

@@ -17,7 +17,8 @@
   },
   "distribute": {
     "measure": "pagerank",
-    "threshold": false
+    "threshold": false,
+    "plot_graph": false
   },
   "mongo": {
     "host": "127.0.0.1",

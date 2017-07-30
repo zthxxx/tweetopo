@@ -30,8 +30,19 @@ def read_hub_persons():
 
 
 def get_hub_uids():
-    columns = _HUB_USERS_COLUMNS
     hub_persons = read_hub_persons()
-    uid_col = columns.index('uid')
+    uid_col = _HUB_USERS_COLUMNS.index('uid')
     hub_uids = {int(person[uid_col]) for person in hub_persons}
     return hub_uids
+
+
+def read_secondouts():
+    columns = _SECONDOUTS_COLUMNS
+    return csv.read_list_csv(columns, _SECONDOUTS_CSV)
+
+
+def get_secondouts_uids():
+    secondouts = read_secondouts()
+    uid_col = _SECONDOUTS_COLUMNS.index('uid')
+    secondout_uids = {int(person[uid_col]) for person in secondouts}
+    return secondout_uids

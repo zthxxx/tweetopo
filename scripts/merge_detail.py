@@ -2,7 +2,7 @@
 import logging
 from conffor import csvtor as csv
 from .hit_rules import persons_data
-from utils.field import fields, read_hub_persons, _HUB_DETAILS_CSV, \
+from utils.field import fields, read_hub_persons, read_secondouts, _HUB_DETAILS_CSV, \
     _HUB_DETAILS_COLUMNS, _HUB_USERS_COLUMNS, _FOCUS_USERS_CSV, _FOCUS_USERS_COLUMNS
 
 
@@ -13,12 +13,22 @@ def read_focus_hub():
     return focus
 
 
+def read_secondouts_all():
+    lines = read_secondouts()
+    secondouts_all = {uid: repeats for uid, repeats in lines}
+    return secondouts_all
+
+
 def filter_persons_unfocus():
     focus = read_focus_hub()
-    persons_list = read_hub_persons()
-    result = [(uid, *ranks, focus[uid]) for uid, *ranks in persons_list if uid in focus]
+    firstouts_all = read_hub_persons()
+    secondouts_all = read_secondouts_all()
+    firstouts = [(uid, *ranks, focus[uid]) for uid, *ranks in firstouts_all if uid in focus]
+    ranks_length = len(_HUB_USERS_COLUMNS[1:])
+    secondouts = [(uid, *(None,) * ranks_length, repeats)
+                  for uid, repeats in secondouts_all.items() if uid in focus]
     columns = _HUB_USERS_COLUMNS + _FOCUS_USERS_COLUMNS[1:]
-    return result, columns
+    return firstouts + secondouts, columns
 
 
 def merge_hub_details(filename):

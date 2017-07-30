@@ -3,7 +3,7 @@
   "degree": "度中心性",
   "pagerank": "pagerank",
   "clustering": "群聚系数",
-  "rule": "匹配规则",
+  "rule": "匹配规则/二度重复",
   "name": "用户名",
   "fullname": "用户全名",
   "description": "个人描述",
