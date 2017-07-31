@@ -20,13 +20,11 @@ def plot_counter_cdf(counter):
     DrawDistribution.plot_cdf(signal)
 
 
-def secondouts_select(relations, counter, pass_threshold):
-    firstouts = {int(key) for key in relations.keys()}
-    logging.info('FirstOut friends of seeds have %d people.' % len(firstouts))
+def secondouts_select(firstouts, counter, pass_threshold):
     pass_count = len(firstouts) * pass_threshold
     secondouts = [(uid, count) for uid, count in counter.items()
                   if count > pass_count and uid not in firstouts]
-    logging.info('Select %.1f%% of SecondOuts are %d.' % (pass_threshold * 100, len(secondouts)))
+    logging.info('Select %.1f%% repeats of SecondOuts are %d.' % (pass_threshold * 100, len(secondouts)))
     return sorted(secondouts, key=_itemgetter(1), reverse=True)
 
 
@@ -40,8 +38,10 @@ def run():
     relations = conffor.load(_RELATION_FILE)
     counter = count_up_repeat(relations)
     secondouts_conf = _config['secondouts']
+    pass_threshold = secondouts_conf['threshold']
+    firstouts = {int(key) for key in relations.keys()}
+    logging.info('FirstOut friends of seeds have %d people.' % len(firstouts))
     if secondouts_conf['repetition_CDF']:
         plot_counter_cdf(counter)
-    pass_threshold = secondouts_conf['threshold']
-    secondouts = secondouts_select(relations, counter, pass_threshold)
+    secondouts = secondouts_select(firstouts, counter, pass_threshold)
     save_mutual_friends(secondouts, _SECONDOUTS_CSV)

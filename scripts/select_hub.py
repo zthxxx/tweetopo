@@ -27,6 +27,7 @@ def run():
     drawer = DrawDistribution(edges, measure=distribute['measure'])
     drawer.filter_ranks(distribute['threshold'])
     nodes = drawer.get_nodes()
+    logging.info('Select count of hubs user are %d' % len(nodes))
     save_hub_persons(nodes, _HUB_USERS_CSV)
 
     if distribute['plot_graph']:

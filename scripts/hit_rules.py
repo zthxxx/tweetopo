@@ -17,14 +17,14 @@ def hit_focus():
         for column in focus_columns:
             if match_focus(person[column]):
                 # person['focus'] = True
-                hits.add(uid)
+                hits.add(int(uid))
                 break
     return hits
 
 
 def filter_relation(hub):
-    filted = {uid: friends for uid, friends in relations.items()
-              if uid in hub}
+    filted = {int(uid): friends for uid, friends in relations.items()
+              if int(uid) in hub}
     return filted
 
 
@@ -43,6 +43,7 @@ def fill_leak():
     hits = hit_focus()
     omissions = hubs - hits
     logging.info('Firstout hubs count: %d, hits in rule: %d, omits: %d' % (len(hubs), len(hits & hubs), len(omissions)))
+    logging.info('Hit rule with secondouts total: %d' % len(hits - hubs))
     picks = set()
     if pickup["measure"] == "degree":
         picks = pick_degree(hits, omissions, pickup["threshold"])
