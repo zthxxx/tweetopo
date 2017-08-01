@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 import logging
-from conffor import csvtor as csv
-from .hit_rules import persons_data
-from utils.field import fields, read_hub_persons, read_secondouts, _HUB_DETAILS_CSV, \
-    _HUB_DETAILS_COLUMNS, _HUB_USERS_COLUMNS, _FOCUS_USERS_CSV, _FOCUS_USERS_COLUMNS
+from conffor import conffor, csvtor as csv
+from utils.field import fields, read_hub_persons, read_secondouts, \
+    _HUB_USERS_JSON, _HUB_DETAILS_CSV, _HUB_DETAILS_COLUMNS, \
+    _HUB_USERS_COLUMNS, _FOCUS_USERS_CSV, _FOCUS_USERS_COLUMNS
 
 
 def read_focus_hub():
@@ -32,6 +32,7 @@ def filter_persons_unfocus():
 
 
 def merge_hub_details(filename):
+    persons_data = conffor.load(_HUB_USERS_JSON)
     detail_cols = _HUB_DETAILS_COLUMNS[1:]
     user_lines, user_columns = filter_persons_unfocus()
     titles = [fields[column] for column in user_columns + detail_cols]

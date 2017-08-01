@@ -5,13 +5,12 @@ from utils.field import get_hub_uids, _RELATION_FILE, _HUB_USERS_JSON, \
     _FOCUS_USERS_CSV, _FOCUS_USERS_COLUMNS
 from utils.focus import pickup, match_focus
 
-persons_data = conffor.load(_HUB_USERS_JSON)
-relations = conffor.load(_RELATION_FILE)
 focus_columns = ['name', 'fullname', 'description', 'location', 'time_zone']
 
 
 def hit_focus():
     hits = set()
+    persons_data = conffor.load(_HUB_USERS_JSON)
     for uid, person in persons_data.items():
         # person['focus'] = False
         for column in focus_columns:
@@ -23,6 +22,7 @@ def hit_focus():
 
 
 def filter_relation(hub):
+    relations = conffor.load(_RELATION_FILE)
     filted = {int(uid): friends for uid, friends in relations.items()
               if int(uid) in hub}
     return filted

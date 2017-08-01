@@ -1,6 +1,7 @@
 .idea/
 __pycache__/
 venv/
+_process_data/
 .project
 .coverage
 *.pyc
