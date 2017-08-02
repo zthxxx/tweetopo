@@ -8,6 +8,10 @@ from retrying import retry
 _FRIENDS_COUNT_MAX_ = 10000
 
 class Twitter():
+    _IGNORE_ERROR_CODES = {326, 50, 63}
+    # 326 - this account is temporarily locked.
+    # 50 - User not found.
+    # 63 - User has been suspended.
     def __init__(self,
         consumer_key, consumer_secret,
         access_token, access_token_secret,
@@ -46,9 +50,8 @@ class Twitter():
         try:
             user = self._api.get_user(user_id=uid, screen_name=name)
         except tweepy.TweepError as e:
-            logging.error(e)
-            if e.api_code == 326:
-                # this account is temporarily locked.
+            logging.error('Uid ({0}) and name ({1}) has error: {2}'.format(uid, name, e))
+            if e.api_code in self._IGNORE_ERROR_CODES:
                 return self
             raise e
         self._user = user

@@ -8,9 +8,9 @@ from scripts import crawling_relation, export_relation, select_secondout, \
 if __name__ == "__main__":
     crawling_relation.run()
     export_relation.run()
-    select_secondout.run()
     mutual_friends.run()
     select_hub.run()
+    select_secondout.run()
     crawling_detail.run()
     export_persons.run()
     hit_rules.run()
