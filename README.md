@@ -132,16 +132,19 @@ The `main.py` is entry of twitter spider for get data, and database operate for 
 
 ### workflow
 
+![tweetopo_workflow](./document/tweetopo_workflow.png)
+
 1. crawl and store twitter user relation data with seed
 2. export db relation to `relations.json` with seed user friends
 3. calculate each mutual friends cache in `mutual_friends.csv`
 4. load `mutual friends` file to edges with create graph struct
 5. filter low rank node out  for cache hub node to `hub_persons.csv`
 6. draw net graph, PDF, CDF
-7. crawl and store twitter user details data with `hub persons` uid list
-8. export db person to `hub_persons.json` with `hub persons` uid list
-9. filter focus user which hit select rules to `focus_hub.csv`
-10. merge hub list and details data to `hub_details.csv`
+7. select secondout friends who multiple repeated to `secondouts.csv`
+8. crawl and store twitter user details data with `hub persons` and `secondouts` uid list
+9. export db person to `hub_persons.json` with  `hub persons` and `secondouts` uid list
+10. filter focus user which hit select rules to `focus_hub.csv`
+11. merge hub list and details data to `hub_details.csv`
 
 The result `hub_details.csv` record people`s uid, name, 3 measure ranks, lcation, description and other account details information.
 

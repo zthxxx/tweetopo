@@ -43,18 +43,18 @@ class Twitter():
         self._api = api
         return self
 
-    @retry(wait_random_min=10*1000, wait_random_max=20*1000, stop_max_attempt_number=5)
+    @retry(wait_random_min=15*1000, wait_random_max=25*1000, stop_max_attempt_number=5)
     def get_user(self, uid=None, name=None):
         if not self._api:
             raise tweepy.TweepError('Api NOT inited!')
         try:
             user = self._api.get_user(user_id=uid, screen_name=name)
+            self._user = user
         except tweepy.TweepError as e:
             logging.error('Uid ({0}) and name ({1}) has error: {2}'.format(uid, name, e))
             if e.api_code in self._IGNORE_ERROR_CODES:
-                return self
+                return None
             raise e
-        self._user = user
         return self
 
     def authentication(method):
@@ -144,7 +144,8 @@ def multi_tweecrawl(tokens, uids_queue, block=True, **kwargs):
         if callable(callback):
             while not uids_queue.empty():
                 uid = uids_queue.get_nowait()
-                twitter.get_user(uid=uid)
+                if twitter.get_user(uid=uid) is None:
+                    continue
                 callback(twitter, uid=uid)
         logging.info('Twitter thead-%d : task complete!' % index)
 

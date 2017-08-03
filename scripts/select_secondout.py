@@ -28,7 +28,7 @@ def secondouts_select(firstouts, counter, pass_threshold):
     return sorted(secondouts, key=_itemgetter(1), reverse=True)
 
 
-def save_mutual_friends(edges, filename):
+def save_secondout_friends(edges, filename):
     columns = _SECONDOUTS_COLUMNS
     csv.save_list_csv(edges, columns, filename)
     logging.info('Save select secondouts friends csv complete')
@@ -44,4 +44,4 @@ def run():
     if secondouts_conf['repetition_CDF']:
         plot_counter_cdf(counter)
     secondouts = secondouts_select(firstouts, counter, pass_threshold)
-    save_mutual_friends(secondouts, _SECONDOUTS_CSV)
+    save_secondout_friends(secondouts, _SECONDOUTS_CSV)
