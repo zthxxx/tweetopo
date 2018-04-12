@@ -15,14 +15,15 @@ services:
   - mongodb
 
 python:
-  - "3.5"
+  - "3.6"
 
-before_install:
-  # command in shell script need sudo
-  - source travis_env_init.sh
+git:
+  depth: false
 
 install:
-  - pip install -r requirements.txt --timeout 600
+  # command in shell script need sudo
+  - sudo apt-get update
+  - source build.sh
 
 before_script:
   # configure mongo unit test database

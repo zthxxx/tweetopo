@@ -1,15 +1,15 @@
 {
   "twitter": [
     {
-      "consumer_key": "CONSUMER_KEY",
-      "consumer_secret": "CONSUMER_SECRET",
-      "access_token": "ACCESS_TOKEN",
-      "access_token_secret": "ACCESS_TOKEN_SECRET",
+      "consumer_key": "${CONSUMER_KEY}",
+      "consumer_secret": "${CONSUMER_SECRET}",
+      "access_token": "${ACCESS_TOKEN}",
+      "access_token_secret": "${ACCESS_TOKEN_SECRET}",
       "proxy": "127.0.0.1:1080"
     }
   ],
   "seed_name": [
-    "SEED_NAME"
+    "${SEED_NAME}"
   ],
   "secondouts": {
     "repetition_CDF": true,
@@ -24,8 +24,8 @@
     "host": "127.0.0.1",
     "port": 27017,
     "database": "tweetopo",
-    "user": "MONGO_USER",
-    "passwd": "MONGO_PASSWD"
+    "user": "${MONGO_USER}",
+    "passwd": "${MONGO_PASSWD}"
   },
   "field_language": "en"
 }
