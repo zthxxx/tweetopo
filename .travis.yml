@@ -23,11 +23,11 @@ git:
 install:
   # command in shell script need sudo
   - sudo apt-get update
-  - source build.sh
+  - source build/build.sh
 
 before_script:
   # configure mongo unit test database
-  - mongo UnitTest --eval 'db.createUser({user:"unit", pwd:"UnitTest", roles:["readWrite"]});'
+  - mongo UnitTest --eval 'db.createUser({user:"unit", pwd:"UnitTest-7g6sSDgRgs", roles:[{role:"readWrite", db:"UnitTest"}]});'
   # configure a headless display to test plot generation
   - "export DISPLAY=:99.0"
   - "sh -e /etc/init.d/xvfb start"

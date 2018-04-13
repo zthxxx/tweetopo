@@ -1,4 +1,3 @@
-# Tweetopo
 
 [![Build Status](https://api.travis-ci.org/zthxxx/tweetopo.png?branch=master)](https://travis-ci.org/zthxxx/tweetopo)
 [![Coverage Status](https://coveralls.io/repos/github/zthxxx/tweetopo/badge.svg?branch=master)](https://coveralls.io/github/zthxxx/tweetopo?branch=master)
@@ -9,7 +8,7 @@ A simple spider for Twitter interpersonal topology.
 
 ## preview
 
-![three_seed_pagerank_heatmap](./document/screenshot/three_seed_pagerank_heatmap.jpg)
+![three_seed_pagerank_heatmap](./docs/screenshot/three_seed_pagerank_heatmap.jpg)
 
 ## What's this?
 
@@ -23,15 +22,15 @@ A node represents a person, a edge represents which two follow each. Nodes and e
 
 Strong (warm, red)   ------>    Weak (cool, blue)
 
-![hot_to_cold_map](./document/screenshot/hot_to_cold_map.png)
+![hot_to_cold_map](./docs/screenshot/hot_to_cold_map.png)
 
 Zoom in two communities separately to analyse. As show below, this is a relationship distribution heatmap which consist of the **irrelevant** seed user's friends. The user have numerous followings, but between each followings almost have no intersection, and clustering rank value is very low overall. So the distribution is scattered, sign that these friends are not in a "Circle of Friend".
 
-![sparse_community](./document/screenshot/sparse_community.jpg)
+![sparse_community](./docs/screenshot/sparse_community.jpg)
 
 Zoom in another side, as show below, this distribution consist of the two **relevant** seed user's friends. Not only are the two user each especial relevance, but also most of their friends are each close relation, they are obvious in a "Circle of Friend", and these are the target of our research.
 
-![intensive_community](./document/screenshot/intensive_community.jpg)
+![intensive_community](./docs/screenshot/intensive_community.jpg)
 
 In the above, there are many blue node (sign that low-level relevance) around the border of bunching core, these aren't  the target of our research.
 
@@ -41,11 +40,11 @@ To show the effect, let's choose only **one target** user's all friends, plot di
 
 As show below, it's **all friends** distribution heatmap:
 
-![one_seed_pagerank_heatmap](./document/screenshot/one_seed_pagerank_heatmap.jpg)
+![one_seed_pagerank_heatmap](./docs/screenshot/one_seed_pagerank_heatmap.jpg)
 
 Filter **core nodes** whitch rank value greater than 0.3 through `pagerank` as show below:
 
-![pagerank_filter_less_0.3](./document/screenshot/pagerank_filter_less_0.3.jpg)
+![pagerank_filter_less_0.3](./docs/screenshot/pagerank_filter_less_0.3.jpg)
 
 Mostly achieve the basic project.
 
@@ -85,7 +84,7 @@ In the config json file, you need set `twitter tokens` and `mongo connetion` and
 
 ### Unit test
 
-Before run the project, you can get **unit test** at first, it used `nose`, a unit testing framework of python. 
+Before run the project, you can get **unit test** at first, it used `nose`, a unit testing framework of python.
 
 ```bash
 $ packages="conffor, database, logsetting, netgraph, twitter"
@@ -99,31 +98,43 @@ $ python -m nose -w . -vs --with-coverage --cover-package="$packages"
 File struct:
 
 ```shell
-tweetopo/       # root directory
+tweetopo/           # root directory
 │
-├─ document/    # doc and image
+├─ docs/            # doc and image
 │
-├─ twitter/     # twitter spider with tweepy
+├─ config/          # configuration files
+│  │
+│  ├─ rules.json       # focus filter rules
+│  │
+│  └─ tweetconf.json   # config file
 │
-├─ netgraph/    # graph struct process and data visualization
+├─ build/           # build scripts
 │
-├─ database/    # package for database operate
+├─ lib/             # lib package
+│  │
+│  ├─ twitter/      # twitter spider with tweepy
+│  │
+│  ├─ netgraph/     # graph struct process and data visualization
+│  │
+│  ├─ database/     # package for database operate
+│  │
+│  ├─ conffor/      # package for config and csv operate
+│  │
+│  ├─ logsetting/   # package for log system setting
+│  │
+│  └─ uitls/        # uitl code snippets
 │
-├─ conffor/     # package for config and csv operate
+├─ src/             # operate script
+│  │
+│  ├─ scripts/      # splited scripts for operation
+│  │
+│  └─ main.py       # entry for run scripts
 │
-├─ logsetting/  # package for log system setting
-│
-├─ tests/       # unit test
-│
-├─ uitls/       # uitl code snippets
-│
-├─ scripts/     # splited scripts for operation
+├─ test/            # unit test
 │
 ├─ README.md
-├─ requirements.txt
-├─ rules.json       # focus filter rules
-├─ tweetconf.json   # config file
-└─ main.py          # entry for run scripts
+│
+└─ requirements.txt
 ```
 
 The `main.py` is entry of twitter spider for get data, and database operate for store and export data.
@@ -132,7 +143,7 @@ The `main.py` is entry of twitter spider for get data, and database operate for 
 
 ### workflow
 
-![tweetopo_workflow](./document/tweetopo_workflow.png)
+![tweetopo_workflow](./docs/tweetopo_workflow.png)
 
 1. crawl and store twitter user relation data with seed
 2. export db relation to `relations.json` with seed user friends
