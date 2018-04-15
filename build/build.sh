@@ -21,5 +21,5 @@ EOF" > ${target}
 compile_template config/tweetconf.json config/rules.json
 
 sudo apt-get install -y python3 python3-dev python3-pip
-pip install -r requirements.txt --timeout 600
+pip --timeout 600 install -r requirements.txt
 

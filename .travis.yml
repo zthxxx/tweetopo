@@ -34,8 +34,7 @@ before_script:
   # need give xvfb some time to start
 
 script:
-  - packages="conffor, database, logsetting, netgraph, twitter"
-  - python -m nose -w . -vs --with-coverage --cover-package="$packages"
+  - python -m nose -w . -vs --with-coverage --cover-package=lib
 
 after_success:
   coveralls
