@@ -1,16 +1,14 @@
 # -*- coding: utf-8 -*-
 import logging
 import queue
-from lib.conffor import conffor
 from lib.twitter.tweeapi import Twitter
 from lib.twitter.tweeapi import multi_tweecrawl
 
-conf_file = './config/tweetconf.json'
-config = conffor.load(conf_file)
-seed_name = config['seed_name']
+from lib.utils import _config
+seed_name = _config['seed_name']
 if isinstance(seed_name, list):
     seed_name = seed_name[0]
-tokens = config["twitter"]
+tokens = _config["twitter"]
 
 twitter = None
 uids_queue = queue.Queue()

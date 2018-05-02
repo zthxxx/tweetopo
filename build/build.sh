@@ -1,24 +1,18 @@
 #!/usr/bin/env bash
 
 __COMMENTS__='
-# OS: ubuntu 14.04 trusty
-# python: 3.5
-# pip: 9.0.1 for python3.5
+# OS: ubuntu 16.04 trusty
+# python: 3.6
+# pip: 9.0.1 for python3.6
 # sudo: required
 # need "CONSUMER_KEY" "CONSUMER_SECRET" "ACCESS_TOKEN" "ACCESS_TOKEN_SECRET" "SEED_NAME" variable in env.
 # how to use: in travis, use the script to run:
-#    source travis_env_init.sh
+#    source build/build.sh
 '
 
-compile_template() {
-  for target in "$@"; do
-eval "cat <<-EOF
-$(cat ${target}.template)
-EOF" > ${target}
-  done
-}
+. ./template-substitution.sh
 
-compile_template config/tweetconf.json config/rules.json
+template_render config/tweetconf.json config/twitter-tonkens.json config/proxy.json config/rules.json
 
 sudo apt-get install -y python3 python3-dev python3-pip
 pip --timeout 600 install -r requirements.txt

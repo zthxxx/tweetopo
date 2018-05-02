@@ -2,9 +2,9 @@
 """
 Output the log to both log-file and console.
 """
+import logging
 import os
 import sys
-import logging
 
 msg_format = '%(asctime)s %(filename)s[line:%(lineno)d] %(levelname)s %(message)s'
 date_format = '%Y-%m-%d %H:%M:%S'
@@ -18,6 +18,7 @@ logging.basicConfig(
     filemode='a'
 )
 
+
 def get_console_stream(stream=None):
     # get and set console log config
     if not stream:
@@ -28,19 +29,22 @@ def get_console_stream(stream=None):
     console.setFormatter(formatter)
     return console
 
+
 # append console to root logger
 logging.getLogger().addHandler(get_console_stream())
+
 
 def clean_log_set():
     root = logging.getLogger()
     root.handlers = []
+
 
 def resetbase(
     level=logging.INFO, format=msg_format, datefmt=date_format,
     filename=log_file, filemode='a', console_stream=None
 ):
     root = logging.getLogger()
-    root.handlers=[]
+    root.handlers = []
     logging.basicConfig(
         level=level,
         format=format,

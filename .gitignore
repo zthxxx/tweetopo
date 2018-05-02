@@ -1,4 +1,6 @@
+.DS_Store
 .idea/
+.vscode/
 __pycache__/
 venv/
 _process_data/
