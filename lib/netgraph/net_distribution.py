@@ -1,6 +1,4 @@
 # -*- coding: utf-8 -*-
-import math
-import numpy as np
 import networkx as nx
 import matplotlib.pyplot as plt
 import matplotlib.colors as colors

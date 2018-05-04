@@ -14,10 +14,6 @@ twitter = None
 uids_queue = queue.Queue()
 seed_user_uid = None
 
-def tokens_filter():
-    for token in tokens:
-        if 'proxy' in token:
-            del token['proxy']
 
 def twitter_oauth():
     global twitter
@@ -25,7 +21,6 @@ def twitter_oauth():
     twitter = Twitter(**twitter_conf)
 
 def setup_module():
-    tokens_filter()
     twitter_oauth()
 
 def try_none_api_user(twitter):

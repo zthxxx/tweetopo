@@ -14,18 +14,25 @@ import click
 # $ export LC_ALL=en_US.UTF-8
 locale.setlocale(locale.LC_ALL, "en_US.UTF-8")
 click.disable_unicode_literals_warning = True
+LENIENT_CONTEXT = dict(ignore_unknown_options=True, allow_extra_args=True)
 
 
-@click.group(name='tweetopo', invoke_without_command=True, chain=True)
+@click.group(name='tweetopo', invoke_without_command=True,
+             context_settings=LENIENT_CONTEXT)
 @click.option('--test', is_flag=True, default=False, expose_value=False,
               help='use test config and env')
+@click.argument('unknown', nargs=-1)
 @click.pass_context
 def cli(ctx, **options):
     """
     this is a cli help docs
     """
-    if ctx.obj is None:
-        ctx.obj = options
+
+    def chain_callback():
+        cli.result_callback(None, **options)
+
+    if not cli.chain and cli.result_callback:
+        ctx.call_on_close(chain_callback)
 
 
 def ops(*args, **kwargs):

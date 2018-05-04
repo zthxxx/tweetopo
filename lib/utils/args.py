@@ -83,6 +83,7 @@ ops('-p', '--proxy', metavar='<proxy[, ...]>', cls=Separate,
 ops('-f', '--flow', metavar='<step>', cls=FlowRange,
     help='set appoint a flow step to run. Default: all')
 
+
 @cli.resultcallback()
 def callback_parse_config(_, **options):
     parse_config(options)
