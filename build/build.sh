@@ -10,10 +10,13 @@ __COMMENTS__='
 #    source build/build.sh
 '
 
-. ./template-substitution.sh
+. build/template-substitution.sh
 
-template_render config/tweetconf.json config/twitter-tonkens.json config/proxy.json config/rules.json
+
+template_render config/tweetconf.json \
+                config/twitter-tokens.json \
+                config/proxy.json \
+                config/rules.json
 
 sudo apt-get install -y python3 python3-dev python3-pip
 pip --timeout 600 install -r requirements.txt
-
