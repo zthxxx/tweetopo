@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 import logging
-import random
 import os
+import random
+
 from lib.conffor import conffor
 
 JSONFILE = './test.json'
@@ -15,17 +16,20 @@ config = {
     'true': True
 }
 
-def conf_write_read_test():
+
+def test_conf_write_read():
     conffor.dump(JSONFILE, config)
     conf_test = conffor.load(JSONFILE)
     for key in config:
         assert config[key] == conf_test[key]
     logging.info("Test config read and save method OK.")
 
+
 def teardown_module():
     if os.path.isfile(JSONFILE):
         os.remove(JSONFILE)
 
+
 if __name__ == '__main__':
-    conf_write_read_test()
+    test_conf_write_read()
     teardown_module()

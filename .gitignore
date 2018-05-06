@@ -3,6 +3,7 @@
 .vscode/
 __pycache__/
 venv/
+.pytest_cache/
 _process_data/
 
 *.py[cod]

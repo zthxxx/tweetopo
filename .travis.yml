@@ -6,7 +6,7 @@ addons:
   apt:
     sources:
       - mongodb-upstart
-      - mongodb-3.2-precise
+      - mongodb-3.6-precise
     packages:
       - mongodb-org-server
       - mongodb-org-shell
@@ -34,7 +34,7 @@ before_script:
   # need give xvfb some time to start
 
 script:
-  - python -m nose -w . -vs --with-coverage --cover-package=lib
+  - py.test --cov=lib test/
 
 after_success:
   coveralls

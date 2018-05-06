@@ -17,17 +17,17 @@ _EDGES = [
 ]
 
 
-def non_existent_measure_test():
+def test_non_existent_measure():
     catch_except = False
     try:
         DrawDistribution(_EDGES, measure='non_existent_measure')
-    except:
+    except Exception:
         catch_except = True
     finally:
         assert catch_except
 
 
-def filter_none_test():
+def test_filter_none():
     drawer = DrawDistribution(_EDGES)
     drawer.filter_ranks(0)
     nodes = drawer.get_nodes()
@@ -40,7 +40,7 @@ def filter_none_test():
     assert len(nodes) < len(_NODES)
 
 
-def distribute_test():
+def test_distribute():
     logging.info('Loading edges to graph ...')
     drawer = DrawDistribution(_EDGES)
     logging.info('Friends distribution analysis ...')
@@ -51,6 +51,6 @@ def distribute_test():
 
 
 if __name__ == '__main__':
-    non_existent_measure_test()
-    filter_none_test()
-    distribute_test()
+    test_non_existent_measure()
+    test_filter_none()
+    test_distribute()
