@@ -1,10 +1,13 @@
 # -*- coding: utf-8 -*-
 import logging
+
 from mongoengine import *
+
 from lib.conffor import conffor
 
 PERSON_FIELD = ['uid', 'name', 'fullname', 'description', 'sign_at', 'location', 'time_zone',
-               'friends_count', 'followers_count', 'statuses_count', 'url', 'protect', 'verified']
+                'friends_count', 'followers_count', 'statuses_count', 'url', 'protect', 'verified']
+
 
 class Person(Document):
     uid = IntField(required=True, primary_key=True)
@@ -21,15 +24,17 @@ class Person(Document):
     protect = BooleanField()
     verified = BooleanField()
     meta = {
-        "indexes": ["#uid"]
+        'indexes': ['#uid']
     }
+
 
 def people_save(name, uid, **kwargs):
     people = Person(name=name, uid=uid, **kwargs)
     try:
         people.save()
     except NotUniqueError as e:
-        logging.warning([people.uid, people.name, "has exist person collection.."])
+        logging.warning([people.uid, people.name, 'has exist person collection..'])
+
 
 def people_find(name='', uid=None):
     if uid is not None:
@@ -38,11 +43,13 @@ def people_find(name='', uid=None):
         people = Person.objects(name=name).first()
     return people
 
+
 def get_uids():
     person = Person._get_collection()
-    uidcour = person.find({}, {"_id": 1})
+    uidcour = person.find({}, {'_id': 1})
     uids = {people.get('_id') for people in uidcour}
     return uids
+
 
 def export_persons(filename, uids=None, limit=0):
     columns = PERSON_FIELD

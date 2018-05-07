@@ -15,15 +15,15 @@ PERSON_LENGTH = 5
 EXPORT_STORE_FILE = './twitter_persons.test.json'
 
 info = {
-    "name": "testname",
-    "fullname": "Test Full name",
-    "uid": uid_base,
-    "description": "This people info for unit test.",
-    "sign_at": datetime.now(),
-    "protect": False,
-    "friends_count": 4,
-    "location": "Chicago",
-    "followers_count": 6
+    'name': 'testname',
+    'fullname': 'Test Full name',
+    'uid': uid_base,
+    'description': 'This people info for unit test.',
+    'sign_at': datetime.now(),
+    'protect': False,
+    'friends_count': 4,
+    'location': 'Chicago',
+    'followers_count': 6
 }
 
 
@@ -42,7 +42,7 @@ def test_save_many_same():
 def test_save_many_diff():
     for i in range(0, PERSON_LENGTH):
         people_info_save(info)
-        info["uid"] = info["uid"] + 1
+        info['uid'] = info['uid'] + 1
     assert Person.objects().count() == 1 + i
 
 
@@ -57,7 +57,7 @@ def test_person_find():
 
 def test_person_read_all():
     index = uid_base
-    for people in Person.objects().order_by("uid"):
+    for people in Person.objects().order_by('uid'):
         assert people.uid == index
         index += 1
 

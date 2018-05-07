@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 import logging
+
 from lib.conffor import csvtor as csv
 from lib.netgraph.net_distribution import DrawDistribution
 from lib.utils import _config
-from lib.utils.field import _MUTUAL_FRIENDS_FILE, _HUB_USERS_CSV, \
-    _MUTUAL_FRIENDS_COLUMNS, _HUB_USERS_COLUMNS
+from lib.utils.field import _HUB_USERS_COLUMNS, _HUB_USERS_CSV, \
+    _MUTUAL_FRIENDS_COLUMNS, _MUTUAL_FRIENDS_FILE
 
 
 def read_mutual_friends():

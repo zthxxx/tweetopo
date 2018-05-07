@@ -1,7 +1,10 @@
 # -*- coding: utf-8 -*-
 import logging
+
 from mongoengine import *
+
 from lib.conffor import conffor
+
 
 class Relation(Document):
     name = StringField()
@@ -10,15 +13,17 @@ class Relation(Document):
     friends = ListField()
     protect = BooleanField()
     meta = {
-        "indexes": ["#uid"]
+        'indexes': ['#uid']
     }
+
 
 def people_save(name, uid, protect, friends_count, friends):
     people = Relation(name=name, uid=uid, protect=protect, friends_count=friends_count, friends=friends)
     try:
         people.save()
     except NotUniqueError as e:
-        logging.warning([people.uid, people.name, "has exist in relation collection."])
+        logging.warning([people.uid, people.name, 'has exist in relation collection.'])
+
 
 def people_find(name='', uid=None):
     if uid is not None:
@@ -27,11 +32,13 @@ def people_find(name='', uid=None):
         people = Relation.objects(name=name).first()
     return people
 
+
 def get_uids():
     person = Relation._get_collection()
-    uidcour = person.find({}, {"_id": 1})
+    uidcour = person.find({}, {'_id': 1})
     uids = {people.get('_id') for people in uidcour}
     return uids
+
 
 def export_relation(filename, seed_name=None, limit=0):
     persons = dict()
@@ -48,8 +55,8 @@ def export_relation(filename, seed_name=None, limit=0):
             uids.update(people.friends)
         uids.difference_update(seed_uids)
         query_obj['_id'] = {'$in': list(uids)}
-    cour = person.find(query_obj, {"_id": 1, "friends":1}).limit(limit)
+    cour = person.find(query_obj, {'_id': 1, 'friends': 1}).limit(limit)
     for people in cour:
-        persons[people['_id']] = people["friends"]
+        persons[people['_id']] = people['friends']
     conffor.dump(filename, persons, None)
     logging.info('Export Relation relationship complete.')

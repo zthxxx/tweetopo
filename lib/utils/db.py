@@ -1,11 +1,13 @@
 # -*- coding: utf-8 -*-
-import queue
 import logging
-import lib.database as db
-from .config import config
+import queue
 
-db_conf = config["mongo"]
+import lib.database as db
+from lib.utils.config import config
+
+db_conf = config['mongo']
 db.set_connect(**db_conf)
+
 
 def confirm_unfound_queue(total, founds):
     unfound_set = set(total) - set(founds)
@@ -14,4 +16,3 @@ def confirm_unfound_queue(total, founds):
     for uid in unfound_set:
         unfounds.put(uid)
     return unfounds
-

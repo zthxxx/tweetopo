@@ -26,6 +26,7 @@ install:
   - source build/build.sh
 
 before_script:
+  - flake8 .
   # configure mongo unit test database
   - mongo UnitTest --eval 'db.createUser({user:"unit", pwd:"UnitTest-7g6sSDgRgs", roles:[{role:"readWrite", db:"UnitTest"}]});'
   # configure a headless display to test plot generation

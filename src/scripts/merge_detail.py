@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 import logging
+
 from lib.conffor import conffor, csvtor as csv
-from lib.utils.field import fields, read_hub_persons, read_secondouts, \
-    _HUB_USERS_JSON, _HUB_DETAILS_CSV, _HUB_DETAILS_COLUMNS, \
-    _HUB_USERS_COLUMNS, _FOCUS_USERS_CSV, _FOCUS_USERS_COLUMNS
+from lib.utils.field import _FOCUS_USERS_COLUMNS, _FOCUS_USERS_CSV, \
+    _HUB_DETAILS_COLUMNS, _HUB_DETAILS_CSV, _HUB_USERS_COLUMNS, \
+    _HUB_USERS_JSON, fields, read_hub_persons, read_secondouts
 
 
 def read_focus_hub():
@@ -23,7 +24,8 @@ def filter_persons_unfocus():
     focus = read_focus_hub()
     firstouts_all = read_hub_persons()
     secondouts_all = read_secondouts_all()
-    firstouts = [(uid, *ranks, focus[uid]) for uid, *ranks in firstouts_all if uid in focus]
+    firstouts = [(uid, *ranks, focus[uid])
+                 for uid, *ranks in firstouts_all if uid in focus]
     ranks_length = len(_HUB_USERS_COLUMNS[1:])
     secondouts = [(uid, *(None,) * ranks_length, repeats)
                   for uid, repeats in secondouts_all.items() if uid in focus]

@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
 import logging
+
 from lib.conffor import conffor, csvtor as csv
-from lib.utils.field import _RELATION_FILE, _MUTUAL_FRIENDS_FILE, _MUTUAL_FRIENDS_COLUMNS
+from lib.utils.field import _MUTUAL_FRIENDS_COLUMNS, _MUTUAL_FRIENDS_FILE, _RELATION_FILE
 
 
 def get_jaccard_between(set_from, set_to):

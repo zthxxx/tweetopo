@@ -1,30 +1,46 @@
 # -*- coding: utf-8 -*-
-import time
 import logging
+import time
 from threading import Thread
+
 import tweepy
 from retrying import retry
 
 _FRIENDS_COUNT_MAX_ = 10000
 
-class Twitter():
+
+def authentication(method):
+    def judge(self, *args, **kwargs):
+        if not self._api:
+            raise tweepy.TweepError('Api NOT inited!')
+        if not self._user:
+            raise tweepy.TweepError('User NOT inited!')
+        method(self, *args, **kwargs)
+        return self
+
+    return judge
+
+
+class Twitter:
     _IGNORE_ERROR_CODES = {326, 50, 63}
+
     # 326 - this account is temporarily locked.
     # 50 - User not found.
     # 63 - User has been suspended.
+
     def __init__(self,
-        consumer_key, consumer_secret,
-        access_token, access_token_secret,
-        proxy=''
-    ):
+                 consumer_key, consumer_secret,
+                 access_token, access_token_secret,
+                 proxy=''
+                 ):
         self._api = None
         self._user = None
         self._config = {
-            "consumer_key": consumer_key,
-            "consumer_secret": consumer_secret,
-            "access_token": access_token,
-            "access_token_secret": access_token_secret,
-            "proxy": proxy
+            'consumer_key': consumer_key,
+            'consumer_secret': consumer_secret,
+            'access_token': access_token,
+            'access_token_secret': access_token_secret,
+            'proxy': proxy
         }
         self.get_tweeapi()
 
@@ -43,7 +59,7 @@ class Twitter():
         self._api = api
         return self
 
-    @retry(wait_random_min=15*1000, wait_random_max=25*1000, stop_max_attempt_number=5)
+    @retry(wait_random_min=15 * 1000, wait_random_max=25 * 1000, stop_max_attempt_number=5)
     def get_user(self, uid=None, name=None):
         if not self._api:
             raise tweepy.TweepError('Api NOT inited!')
@@ -56,16 +72,6 @@ class Twitter():
                 return None
             raise e
         return self
-
-    def authentication(method):
-        def judge(self, *args, **kwargs):
-            if not self._api:
-                raise tweepy.TweepError('Api NOT inited!')
-            if not self._user:
-                raise tweepy.TweepError('User NOT inited!')
-            method(self, *args, **kwargs)
-            return self
-        return judge
 
     @authentication
     def get_friends(self, callback, pages_limit=0):
@@ -89,17 +95,19 @@ class Twitter():
     def store_user_relation(self, store=None, pages_limit=0):
         user = self._user
         friends = []
+
         def set_friends(list):
             nonlocal friends
             friends = list
+
         if callable(store):
             self.get_friends(set_friends, pages_limit)
             people = {
-                "name": user.screen_name,
-                "uid": user.id,
-                "protect": user.protected,
-                "friends_count": user.friends_count,
-                "friends": friends
+                'name': user.screen_name,
+                'uid': user.id,
+                'protect': user.protected,
+                'friends_count': user.friends_count,
+                'friends': friends
             }
             store(**people)
 
@@ -124,21 +132,23 @@ class Twitter():
             }
             store(**people)
 
+
 def multi_tweecrawl(tokens, uids_queue, block=True, **kwargs):
-    '''
+    """
     multi-threading for crawl twitter api with users id
     :param tokens: some twitter api tokens
     :param uids_queue: Queue of user ids
     :param block: is block for crawling
     :param kwargs: kwargs of thead (callback)
     :return:
-    '''
+    """
+
     def thread_from_queue(index, twitter, callback=None):
-        '''
+        """
         :param index: thread index to start and sleep
         :param twitter: authentic instance of Twitter
         :param callback: func of operate which receive two param (twitter, uid)
-        '''
+        """
         time.sleep(index)
         logging.info('Twitter thead-%d : tasks started!' % index)
         if callable(callback):
@@ -154,7 +164,8 @@ def multi_tweecrawl(tokens, uids_queue, block=True, **kwargs):
         if uids_queue.empty() or uids_queue.qsize() < index + 1:
             break
         twitter = Twitter(**token)
-        task = Thread(name='Theading-%d'%(index+1) , target=thread_from_queue, args=(index+1, twitter), kwargs=kwargs)
+        task = Thread(name='Theading-%d' % (index + 1), target=thread_from_queue, args=(index + 1, twitter),
+                      kwargs=kwargs)
         tasks.append(task)
         task.start()
     logging.info('Twitter tasks all started!')

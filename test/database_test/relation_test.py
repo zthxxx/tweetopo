@@ -14,11 +14,11 @@ PERSON_LENGTH = 5
 EXPORT_STORE_FILE = './twitter_relations.test.json'
 
 info = {
-    "name": "testname",
-    "uid": uid_base,
-    "protect": False,
-    "friends_count": 4,
-    "friends": [uid_base, uid_base + 1, uid_base + 2, uid_base + 3]
+    'name': 'testname',
+    'uid': uid_base,
+    'protect': False,
+    'friends_count': 4,
+    'friends': [uid_base, uid_base + 1, uid_base + 2, uid_base + 3]
 }
 
 
@@ -37,7 +37,7 @@ def test_save_many_same():
 def test_save_many_diff():
     for i in range(0, PERSON_LENGTH):
         people_info_save(info)
-        info["uid"] = info["uid"] + 1
+        info['uid'] = info['uid'] + 1
     assert Relation.objects().count() == 1 + i
 
 
@@ -52,7 +52,7 @@ def test_person_find():
 
 def test_person_read_all():
     index = uid_base
-    for people in Relation.objects().order_by("uid"):
+    for people in Relation.objects().order_by('uid'):
         assert people.uid == index
         index += 1
 

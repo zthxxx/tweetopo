@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
 import logging
+
 from lib.conffor import conffor, csvtor as csv
-from lib.utils.field import get_hub_uids, _RELATION_FILE, _HUB_USERS_JSON, \
-    _FOCUS_USERS_CSV, _FOCUS_USERS_COLUMNS
-from lib.utils.focus import pickup, match_focus
+from lib.utils.field import _FOCUS_USERS_COLUMNS, _FOCUS_USERS_CSV, \
+    _HUB_USERS_JSON, _RELATION_FILE, get_hub_uids
+from lib.utils.focus import match_focus, pickup
 
 focus_columns = ['name', 'fullname', 'description', 'location', 'time_zone']
 
@@ -42,11 +43,12 @@ def fill_leak():
     hubs = get_hub_uids()
     hits = hit_focus()
     omissions = hubs - hits
-    logging.info('Firstout hubs count: %d, hits in rule: %d, omits: %d' % (len(hubs), len(hits & hubs), len(omissions)))
+    logging.info('Firstout hubs count: %d, hits in rule: %d, omits: %d' %
+                 (len(hubs), len(hits & hubs), len(omissions)))
     logging.info('Hit rule with secondouts total: %d' % len(hits - hubs))
     picks = set()
-    if pickup["measure"] == "degree":
-        picks = pick_degree(hits, omissions, pickup["threshold"])
+    if pickup['measure'] == 'degree':
+        picks = pick_degree(hits, omissions, pickup['threshold'])
     logging.info('Re pick up firstouts total of %d' % len(picks))
     return hits, picks
 

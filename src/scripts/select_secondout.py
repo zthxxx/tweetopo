@@ -1,10 +1,11 @@
+from collections import Counter
 import logging
 from operator import itemgetter as _itemgetter
-from collections import Counter
+
 from lib.conffor import conffor, csvtor as csv
 from lib.netgraph.net_distribution import DrawDistribution
 from lib.utils import _config
-from lib.utils.field import _RELATION_FILE, _SECONDOUTS_CSV, _SECONDOUTS_COLUMNS
+from lib.utils.field import _RELATION_FILE, _SECONDOUTS_COLUMNS, _SECONDOUTS_CSV
 
 
 def count_up_repeat(relations):
@@ -24,7 +25,8 @@ def secondouts_select(firstouts, counter, pass_threshold):
     pass_count = len(firstouts) * pass_threshold
     secondouts = [(uid, count) for uid, count in counter.items()
                   if count > pass_count and uid not in firstouts]
-    logging.info('Select %.1f%% repeats of SecondOuts are %d.' % (pass_threshold * 100, len(secondouts)))
+    logging.info('Select %.1f%% repeats of SecondOuts are %d.' %
+                 (pass_threshold * 100, len(secondouts)))
     return sorted(secondouts, key=_itemgetter(1), reverse=True)
 
 

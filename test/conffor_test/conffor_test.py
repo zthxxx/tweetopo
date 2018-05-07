@@ -22,7 +22,7 @@ def test_conf_write_read():
     conf_test = conffor.load(JSONFILE)
     for key in config:
         assert config[key] == conf_test[key]
-    logging.info("Test config read and save method OK.")
+    logging.info('Test config read and save method OK.')
 
 
 def teardown_module():

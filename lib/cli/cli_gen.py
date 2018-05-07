@@ -9,10 +9,10 @@ import locale
 
 import click
 
-# also set "LC_ALL=en_US.UTF-8" in pycharm environment or system env
+# also set 'LC_ALL=en_US.UTF-8' in pycharm environment or system env
 # PyCharm -> Run -> Edit Configurations -> Defaults -> Python -> Environment variables
 # $ export LC_ALL=en_US.UTF-8
-locale.setlocale(locale.LC_ALL, "en_US.UTF-8")
+locale.setlocale(locale.LC_ALL, 'en_US.UTF-8')
 click.disable_unicode_literals_warning = True
 LENIENT_CONTEXT = dict(ignore_unknown_options=True, allow_extra_args=True)
 

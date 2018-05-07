@@ -1,17 +1,17 @@
 # -*- coding: utf-8 -*-
-import networkx as nx
-import matplotlib.pyplot as plt
 import matplotlib.colors as colors
+import matplotlib.pyplot as plt
+import networkx as nx
 
 
 class GraphAnalysis:
     def __init__(self, edges, measure='pagerank'):
-        '''
+        """
         Class for analysis graph
         :param edges: weighted_edges The edges must be given as 3-tuples like (u,v,weight)
         :param measure: what measure for analysis to filter,
                         must be one of  'degree' or 'pagerank' or 'clustering'
-        '''
+        """
         self.measures = ['degree', 'pagerank', 'clustering']
         self.measure = measure
         self.ranks = {}
@@ -45,10 +45,10 @@ class GraphAnalysis:
             self.ranks[measure] = {'ranks': ranks, 'max': max_rank}
 
     def node_rank(self, node, measure=None):
-        '''
+        """
         :param n:  node
         :return: Normalized value from 0 to 1, mean that the rank of the node
-        '''
+        """
         if measure is None:
             measure = self.measure
         ranks = self.ranks[measure]
@@ -56,11 +56,11 @@ class GraphAnalysis:
         return rank
 
     def filter_ranks(self, gate):
-        '''
+        """
         delete some micro node which measure under the threshold
         :param gate: gate is a normalized threshold value from 0 to 1,
                      will filtered node out which measure less than it.
-        '''
+        """
         if not gate:
             return
         deserts = [node for node in self.G.nodes()
@@ -93,13 +93,13 @@ class DrawDistribution(GraphAnalysis):
         return [self.node_size(n) for n in nodes]
 
     def hue_map(self, value):
-        '''
+        """
         :param value: number 0 to 1, map to hue 0.6 - 0 (blue to red, like heatmap)
                       more highter the value, more warm the color
         :return: hex of rgb
-        '''
-        HUE_MAX = 0.6
-        hue = pow(1 - value, 2) * HUE_MAX
+        """
+        hue_max = 0.6
+        hue = pow(1 - value, 2) * hue_max
         rgb = colors.hsv_to_rgb((hue, 1, 1))
         hex = colors.to_hex(rgb)
         return hex

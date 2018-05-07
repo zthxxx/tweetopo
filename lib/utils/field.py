@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 from os import path
+
 from lib.conffor import conffor, csvtor as csv
 from lib.database.person import PERSON_FIELD
-from .config import config as _config
+from lib.utils.config import config as _config
 
 _DATA_ROOT = path.join('.', '_process_data', '%s')
 

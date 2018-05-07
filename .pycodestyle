@@ -1,0 +1,8 @@
+[pycodestyle]
+exclude = .git, .idea, .vscode, .project, __pycache__, .pytest_cache, _process_data, venv, docs, build, dist
+filename = *.py
+ignore =
+show-pep8 = True
+statistics = True
+count = True
+max-line-length = 120

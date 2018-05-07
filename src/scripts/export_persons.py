@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from lib.utils.db import db
-from lib.utils.field import get_hub_uids, get_secondouts_uids, _HUB_USERS_JSON
+from lib.utils.field import _HUB_USERS_JSON, get_hub_uids, get_secondouts_uids
 
 
 def export_hub_persons(filename):

@@ -14,7 +14,7 @@ def log_reset(console):
 
 
 def redirect_stdout(callback):
-    with open(redirect_file, 'w+', encoding="utf-8") as file:
+    with open(redirect_file, 'w+', encoding='utf-8') as file:
         sys.stderr = sys.stdout = file
         log_reset(console=file)
         if callable(callback):

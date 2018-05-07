@@ -19,7 +19,7 @@ def test_csv_write_read():
         edge = [int(value) for value in edge]
         assert name == data_list[index][0]
         assert edge == data_list[index][1:]
-    logging.info("Test csv read and save method OK.")
+    logging.info('Test csv read and save method OK.')
 
 
 def teardown_module():

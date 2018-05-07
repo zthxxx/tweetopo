@@ -1,0 +1,11 @@
+[flake8]
+exclude = .git, .idea, .vscode, .project, __pycache__, .pytest_cache, _process_data, venv, docs, build, dist
+ignore = F401, F403, F405, I100, I202
+max-complexity = 10
+max-line-length = 120
+
+import-order-style = google
+
+inline-quotes = single
+multiline-quotes = '''
+docstring-quotes = """

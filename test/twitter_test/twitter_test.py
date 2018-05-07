@@ -9,7 +9,7 @@ from lib.utils import _config
 seed_name = _config['seed_name']
 if isinstance(seed_name, list):
     seed_name = seed_name[0]
-tokens = _config["twitter"]
+tokens = _config['twitter']
 
 twitter = None
 uids_queue = queue.Queue()

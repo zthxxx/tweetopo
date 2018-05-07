@@ -1,14 +1,13 @@
 # -*- coding: utf-8 -*-
-from lib.twitter.tweeapi import Twitter
-from lib.twitter.tweeapi import multi_tweecrawl
-from lib.utils.db import db, confirm_unfound_queue
+from lib.twitter.tweeapi import multi_tweecrawl, Twitter
 from lib.utils import _config
+from lib.utils.db import confirm_unfound_queue, db
 
 relate_store = db.relation.people_save
 relate_query = db.relation.people_find
 
 seed_name = _config['seed_name']
-tokens = _config["twitter"]
+tokens = _config['twitter']
 
 
 def store_relation(twitter, uid=None):

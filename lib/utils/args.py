@@ -1,8 +1,8 @@
 from inspect import isclass
 from itertools import chain
 
-from lib.cli import click, cli, ops
-from .config import parse_config
+from lib.cli import cli, click, ops
+from lib.utils.config import parse_config
 
 DEFAULTS = {
     'config': 'config/tweetconf.json',
