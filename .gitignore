@@ -20,5 +20,4 @@ _process_data/
 *.xml
 *.json
 
-!*unit_test.json
 !**/*_languages/*.json

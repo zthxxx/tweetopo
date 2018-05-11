@@ -1,0 +1,25 @@
+db = db.getSiblingDB('admin')
+
+db.createUser({
+  user: "tweet",
+  pwd: "tweet-${MONGO_PASSWD}",
+  roles: [
+    {
+      role: "readWrite",
+      db: "tweetopo"
+    }
+  ]
+})
+
+db.createUser({
+  user: "unit",
+  pwd: "UnitTest-${MONGO_TEST_PASSWD}",
+  roles: [
+    {
+      role: "readWrite",
+      db: "UnitTest"
+    }
+  ]
+})
+
+

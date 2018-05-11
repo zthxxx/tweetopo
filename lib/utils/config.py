@@ -15,7 +15,8 @@ def parse_config(options):
     merge = {
         'twitter': tokens,
         'proxy': proxy,
-        'flow': options.get('flow')
+        'flow': options.get('flow'),
+        'log': options['log']
     }
     config.update(merge)
     config.update(conffor.load(options['config']))

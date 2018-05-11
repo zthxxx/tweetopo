@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from lib.twitter.tweeapi import multi_tweecrawl, Twitter
+from lib.twitter.tweeapi import Twitter, multi_tweecrawl
 from lib.utils import _config
 from lib.utils.db import confirm_unfound_queue, db
 

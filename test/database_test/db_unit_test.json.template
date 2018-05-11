@@ -4,6 +4,6 @@
     "port": 27017,
     "database": "UnitTest",
     "user": "unit",
-    "passwd": "UnitTest-7g6sSDgRgs"
+    "passwd": "UnitTest-${MONGO_TEST_PASSWD}"
   }
 }

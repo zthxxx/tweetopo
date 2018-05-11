@@ -7,7 +7,8 @@ from lib.utils.config import parse_config
 DEFAULTS = {
     'config': 'config/tweetconf.json',
     'token': 'config/twitter-tokens.json',
-    'proxy': 'config/proxy.json'
+    'proxy': 'config/proxy.json',
+    'log': './output.log'
 }
 
 
@@ -82,6 +83,10 @@ ops('-p', '--proxy', metavar='<proxy[, ...]>', cls=Separate,
     help='set proxy uri list, separated by comma. will override `--proxy-path` set.')
 ops('-f', '--flow', metavar='<step>', cls=FlowRange,
     help='set appoint a flow step to run. Default: all')
+ops('-d', '--daemon', is_flag=True, default=False,
+    help='to trigger the command run in daemon')
+ops('--log', metavar='<path>', default=DEFAULTS['log'],
+    help='set the output log file. Default: %s' % DEFAULTS['log'])
 
 
 @cli.resultcallback()

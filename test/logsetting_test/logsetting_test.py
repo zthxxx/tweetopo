@@ -8,15 +8,15 @@ redirect_file = './stdout.out'
 log_file = './test.log'
 
 
-def log_reset(console):
+def log_reset(stream):
     from lib import logsetting
-    logsetting.resetbase(filename=log_file, filemode='w', console_stream=console)
+    logsetting.reset_base(filename=log_file, filemode='w', stream=stream)
 
 
 def redirect_stdout(callback):
     with open(redirect_file, 'w+', encoding='utf-8') as file:
         sys.stderr = sys.stdout = file
-        log_reset(console=file)
+        log_reset(file)
         if callable(callback):
             callback()
 

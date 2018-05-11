@@ -1,10 +1,16 @@
 [flake8]
 exclude = .git, .idea, .vscode, .project, __pycache__, .pytest_cache, _process_data, venv, docs, build, dist
+
+# F401	module imported but unused
+# F403	‘from module import *’ used; unable to detect undefined names
+# F405	name may be undefined, or defined from star imports: module
+# I100 Your import statements are in the wrong order
+# I202  Additional newline in a group of imports
 ignore = F401, F403, F405, I100, I202
 max-complexity = 10
 max-line-length = 120
 
-import-order-style = google
+import-order-style = pycharm
 
 inline-quotes = single
 multiline-quotes = '''

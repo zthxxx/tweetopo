@@ -2,8 +2,7 @@
 import logging
 import queue
 
-from lib.twitter.tweeapi import Twitter
-from lib.twitter.tweeapi import multi_tweecrawl
+from lib.twitter.tweeapi import Twitter, multi_tweecrawl
 from lib.utils import _config
 
 seed_name = _config['seed_name']

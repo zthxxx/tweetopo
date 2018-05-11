@@ -1,5 +1,5 @@
-from collections import Counter
 import logging
+from collections import Counter
 from operator import itemgetter as _itemgetter
 
 from lib.conffor import conffor, csvtor as csv
