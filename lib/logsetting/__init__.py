@@ -8,52 +8,43 @@ import sys
 
 from lib.utils import _config
 
-msg_format = '%(asctime)s %(filename)s[line:%(lineno)d] %(levelname)s %(message)s'
-date_format = '%Y-%m-%d %H:%M:%S'
-log_file = _config['log']
-
-logging.basicConfig(
-    level=logging.INFO,
-    format=msg_format,
-    datefmt=date_format,
-    filename=log_file,
-    filemode='a'
-)
+MSG_FORMAT = '%(asctime)s %(filename)s[line:%(lineno)d] %(levelname)s %(message)s'
+TIME_FORMAT = '%Y-%m-%d %H:%M:%S'
+LOG_FILE = _config['log']
 
 
-def get_formatted_handler(stream=sys.stdout):
+def format_stream(stream=sys.stdout,
+                  level=logging.INFO, msg_format=MSG_FORMAT, date_format=TIME_FORMAT):
     """
     create a formatted stream handler
     """
     handler = logging.StreamHandler(stream)
-    handler.setLevel(logging.INFO)
+    handler.setLevel(level)
     formatter = logging.Formatter(fmt=msg_format, datefmt=date_format)
     handler.setFormatter(formatter)
     return handler
 
 
-# append console to root logger
-logging.getLogger().addHandler(get_formatted_handler())
-
-
-def clean_log_set():
+def clear_logsetting():
     root = logging.getLogger()
     root.handlers = []
+    return root
 
 
-def reset_base(
-    level=logging.INFO, format=msg_format, datefmt=date_format,
-    filename=log_file, filemode='a', stream=sys.stdout
+def reset_logbase(
+    filename=LOG_FILE, stream=sys.stdout,
+    filemode='a',
+    level=logging.INFO, msg_format=MSG_FORMAT, date_format=TIME_FORMAT,
 ):
-    root = logging.getLogger()
-    root.handlers = []
-    logging.basicConfig(
-        level=level,
-        format=format,
-        datefmt=datefmt,
-        filename=filename,
-        filemode=filemode
-    )
-    root.addHandler(get_formatted_handler(stream))
-    if filename != log_file and os.path.isfile(log_file):
-        os.remove(log_file)
+    format_config = {
+        'level': level,
+        'format': msg_format,
+        'datefmt': date_format,
+        'filemode': filemode
+    }
+    root = clear_logsetting()
+    logging.basicConfig(filename=filename, **format_config)
+    if stream:
+        root.addHandler(format_stream(stream, **format_config))
+    if filename is not LOG_FILE and os.path.isfile(LOG_FILE):
+        os.remove(LOG_FILE)

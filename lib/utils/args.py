@@ -1,7 +1,4 @@
-from inspect import isclass
-from itertools import chain
-
-from lib.cli import cli, click, ops
+from lib.cli import FlowRange, Separate, cli, click, ops
 from lib.utils.config import parse_config
 
 DEFAULTS = {
@@ -10,66 +7,6 @@ DEFAULTS = {
     'proxy': 'config/proxy.json',
     'log': './output.log'
 }
-
-
-class Separate(click.Option):
-    def type_cast_value(self, ctx, value):
-        try:
-            if not value:
-                return
-            return value.split(',')
-        except Exception:
-            print('Separate')
-            raise click.BadParameter(value)
-
-    def __repr__(self):
-        return 'CSV'
-
-
-class FlowRange(click.Option):
-    def parse_range(self, series):
-        parts = list(map(int, series.split('-')))
-        if 1 > len(parts) > 2:
-            raise click.BadParameter(series)
-        if len(parts) == 1:
-            return parts
-        start, end = parts
-        if start > end:
-            raise click.BadParameter(series)
-        return range(start, end + 1)
-
-    def type_cast_value(self, ctx, value):
-        try:
-            if not value:
-                return
-            return chain(*map(self.parse_range, value.split(',')))
-        except Exception:
-            raise click.BadParameter(value)
-
-    def __repr__(self):
-        return 'NUM-Range'
-
-
-class TypeChose(click.Choice):
-    def __init__(self, *choices):
-        super().__init__(choices)
-
-    def convert(self, value, param, ctx):
-        for choice in self.choices:
-            if isclass(choice):
-                if isinstance(value, choice):
-                    return value
-            else:
-                if value is choice:
-                    return value
-                try:
-                    return choice(value, param, ctx)
-                except Exception:
-                    print('is not this type', type(choice))
-                    pass
-        else:
-            raise click.BadParameter(value)
-
 
 ops('--config', metavar='<config-path>', default=DEFAULTS['config'], type=click.Path(exists=True),
     help='set tweetopo config file. Default: %s' % DEFAULTS['config'])
@@ -85,7 +22,7 @@ ops('-f', '--flow', metavar='<step>', cls=FlowRange,
     help='set appoint a flow step to run. Default: all')
 ops('-d', '--daemon', is_flag=True, default=False,
     help='to trigger the command run in daemon')
-ops('--log', metavar='<path>', default=DEFAULTS['log'],
+ops('--log', metavar='<path>', default=DEFAULTS['log'], type=click.Path(),
     help='set the output log file. Default: %s' % DEFAULTS['log'])
 
 

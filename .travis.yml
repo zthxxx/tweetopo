@@ -26,7 +26,6 @@ git:
 
 install:
   # command in shell script need sudo
-  - sudo apt-get update
   - source build/build.sh
 
 before_script:

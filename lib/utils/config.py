@@ -22,3 +22,6 @@ def parse_config(options):
     config.update(conffor.load(options['config']))
     if config.get('user'):
         config['seed_name'] = config['user']
+    if options['daemon']:
+        from lib.daemon import daemon
+        config['daemon'] = daemon

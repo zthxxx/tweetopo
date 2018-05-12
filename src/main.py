@@ -29,4 +29,13 @@ def main():
         workflow[step].run()
 
 
-main()
+def run(daemon):
+    logging.info('Link Start !!! \n')
+    if not daemon:
+        main()
+        return
+    with daemon:
+        main()
+
+
+run(_config.get('daemon'))

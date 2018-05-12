@@ -1,2 +1,2 @@
-import lib.logsetting
-lib.logsetting.logging.info('Link Start!!! \n')
+from lib.logsetting import reset_logbase
+reset_logbase()
