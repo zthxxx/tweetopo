@@ -12,8 +12,8 @@ const users = {
 }
 
 function newUser(user) {
-  let db = db.getSiblingDB(user.db)
-  if (!db.getUser(user.user)) {
+  db = db.getSiblingDB(user.db)
+  if (!db.getUser(user.name)) {
     db.createUser({
       user: user.name,
       pwd: user.pwd,

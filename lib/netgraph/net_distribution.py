@@ -1,4 +1,11 @@
 # -*- coding: utf-8 -*-
+try:
+    import tkinter
+except ModuleNotFoundError:
+    import matplotlib
+
+    matplotlib.use('Agg')
+
 import matplotlib.colors as colors
 import matplotlib.pyplot as plt
 import networkx as nx

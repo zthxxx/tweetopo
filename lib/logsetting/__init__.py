@@ -45,6 +45,6 @@ def reset_logbase(
     root = clear_logsetting()
     logging.basicConfig(filename=filename, **format_config)
     if stream:
-        root.addHandler(format_stream(stream, **format_config))
+        root.addHandler(format_stream(stream, level, msg_format, date_format))
     if filename is not LOG_FILE and os.path.isfile(LOG_FILE):
         os.remove(LOG_FILE)

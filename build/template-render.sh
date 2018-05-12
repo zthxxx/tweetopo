@@ -16,6 +16,6 @@ tmplt.render() {
             echo "Can not find template: ${target}.${TMPLT_SUFFIX}"
             return 1
         fi
-        compile_tmplt "$target"
+        tmplt.compile "$target"
     done
 }

@@ -22,4 +22,5 @@ _process_data/
 *.xml
 *.json
 
+init-db.js
 !**/*_languages/*.json
