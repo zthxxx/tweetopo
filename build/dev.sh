@@ -2,20 +2,27 @@
 # workdir: tweetopo
 # source build/dev.sh
 
-[[ -d venv ]] || python3 -m venv venv
+# if not initialized, build it
+if [[ ! -d venv ]]; then
+  python3 -m venv venv
+  . venv/bin/activate
+  . build/build.sh
+fi
 . venv/bin/activate
-. build/build.sh
 
 # mongo docker init operate
 mongo_data="/var/lib/mongo/db"
-sudo mkdir -p "$mongo_data"
-sudo chown -R $USER "$mongo_data"
-initdb_file="`pwd`/config/init-db.js"
+if [[ ! -w "$mongo_data" ]]; then
+  sudo mkdir -p "$mongo_data"
+  sudo chown -R $USER "$mongo_data"
+fi
 
-docker top mongo &> /dev/null && exit
-docker rm mongo
-docker run -d --rm --name mongo \
-  -v "$mongo_data":/data/db \
-  -v "$initdb_file":/docker-entrypoint-initdb.d/initdb.js \
-  -p 23333:27017 \
-  mongo:3.6 --auth
+if ! docker top mongo &> /dev/null; then
+  docker rm mongo
+  initdb_file="`pwd`/config/init-db.js"
+  docker run -d --rm --name mongo \
+    -v "$mongo_data":/data/db \
+    -v "$initdb_file":/docker-entrypoint-initdb.d/initdb.js \
+    -p 23333:27017 \
+    mongo:3.6 --auth
+fi

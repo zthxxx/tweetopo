@@ -29,11 +29,12 @@ def main():
         workflow[step].run()
 
 
-def run(daemon):
+def run(as_daemon):
     logging.info('Link Start !!! \n')
-    if not daemon:
+    if not as_daemon:
         main()
         return
+    from lib.daemon import daemon
     with daemon:
         main()
 

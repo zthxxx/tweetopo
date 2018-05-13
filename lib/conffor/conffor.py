@@ -5,16 +5,18 @@ Some function for read and write json config file.
 
 import json
 
+from . import ensure_dir_exist
 
-def load(path):
-    config = None
-    with open(path, 'r', encoding='utf-8') as jsonfile:
+
+def load(file):
+    with open(file, 'r', encoding='utf-8') as jsonfile:
         config = json.load(jsonfile, encoding='utf-8')
-    return config
+        return config
 
 
-def dump(path, config, indent=2):
-    with open(path, 'w+', encoding='utf-8') as jsonfile:
+def dump(file, config, indent=2):
+    ensure_dir_exist(file)
+    with open(file, 'w+', encoding='utf-8') as jsonfile:
         json.dump(
             config, jsonfile,
             indent=indent,

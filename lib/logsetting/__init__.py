@@ -6,6 +6,7 @@ import logging
 import os
 import sys
 
+from lib.conffor import ensure_dir_exist
 from lib.utils import _config
 
 MSG_FORMAT = '%(asctime)s %(filename)s[line:%(lineno)d] %(levelname)s %(message)s'
@@ -43,6 +44,7 @@ def reset_logbase(
         'filemode': filemode
     }
     root = clear_logsetting()
+    ensure_dir_exist(filename)
     logging.basicConfig(filename=filename, **format_config)
     if stream:
         root.addHandler(format_stream(stream, level, msg_format, date_format))

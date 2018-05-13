@@ -16,12 +16,10 @@ def parse_config(options):
         'twitter': tokens,
         'proxy': proxy,
         'flow': options.get('flow'),
+        'daemon': options['daemon'],
         'log': options['log']
     }
     config.update(merge)
     config.update(conffor.load(options['config']))
     if config.get('user'):
         config['seed_name'] = config['user']
-    if options['daemon']:
-        from lib.daemon import daemon
-        config['daemon'] = daemon

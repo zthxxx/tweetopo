@@ -5,16 +5,16 @@ from lib.conffor import conffor, csvtor as csv
 from lib.database.person import PERSON_FIELD
 from lib.utils.config import config as _config
 
-_DATA_ROOT = path.join('.', '_process_data', '%s')
+_DATA_ROOT = path.join('.', '.process_data', '%s')
 
-_RELATION_FILE = _DATA_ROOT % '_twitter_relations.json'
-_SECONDOUTS_CSV = _DATA_ROOT % '_secondouts.csv'
-_MUTUAL_FRIENDS_FILE = _DATA_ROOT % '_mutual_friends.csv'
-_HUB_USERS_CSV = _DATA_ROOT % '_hub_persons.csv'
-_HUB_USERS_JSON = _DATA_ROOT % '_hub_persons.json'
-_FOCUS_USERS_CSV = _DATA_ROOT % '_focus_hub.csv'
+_RELATION_FILE = _DATA_ROOT % 'twitter_relations.json'
+_SECONDOUTS_CSV = _DATA_ROOT % 'secondouts.csv'
+_MUTUAL_FRIENDS_FILE = _DATA_ROOT % 'mutual_friends.csv'
+_HUB_USERS_CSV = _DATA_ROOT % 'hub_persons.csv'
+_HUB_USERS_JSON = _DATA_ROOT % 'hub_persons.json'
+_FOCUS_USERS_CSV = _DATA_ROOT % 'focus_hub.csv'
 _FIELD_LANGUAGE_JSON = path.join('field_languages', '%s.json')
-_HUB_DETAILS_CSV = _DATA_ROOT % '_hub_details.csv'
+_HUB_DETAILS_CSV = _DATA_ROOT % 'hub_details.csv'
 
 _SECONDOUTS_COLUMNS = ['uid', 'repeats']
 _MUTUAL_FRIENDS_COLUMNS = ['user', 'friend', 'weight']
