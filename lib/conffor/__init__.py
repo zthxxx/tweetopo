@@ -7,4 +7,4 @@ def ensure_dir_exist(file):
         makedirs(dirs)
 
 
-__all__ = ['conffor', 'csvtor']
+__all__ = ['ensure_dir_exist', 'conffor', 'csvtor']

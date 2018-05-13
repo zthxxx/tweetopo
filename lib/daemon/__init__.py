@@ -1,6 +1,7 @@
 import logging
 import os
 import signal
+import sys
 
 from daemon import DaemonContext
 import lockfile
@@ -24,14 +25,20 @@ def stderr_log():
         return stderr
 
 
+class Daemon(DaemonContext):
+    def terminate(self, signal_number, stack_frame):
+        self.__exit__(None, None, None)
+        sys.exit(0)
+
+
 # ref: https://www.python.org/dev/peps/pep-3143
-daemon = DaemonContext(
+daemon = Daemon(
     working_directory=os.getcwd(),
     pidfile=lockfile.FileLock('.tweetopo.pid'),
     stderr=stderr_log(),
     files_preserve=[preserve_logger(h) for h in logging.getLogger().handlers],
     signal_map={
         signal.SIGHUP: None,
-        signal.SIGTERM: 'close'
+        signal.SIGTERM: 'terminate'
     }
 )

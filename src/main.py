@@ -2,24 +2,10 @@
 import logging
 
 from lib.utils import _config
-from src.scripts import crawling_detail, crawling_relation, \
-    export_persons, export_relation, hit_rules, merge_detail, \
-    mutual_friends, select_hub, select_secondout
-
-workflow = [
-    crawling_relation,
-    export_relation,
-    mutual_friends,
-    select_hub,
-    select_secondout,
-    crawling_detail,
-    export_persons,
-    hit_rules,
-    merge_detail
-]
 
 
 def main():
+    from src.workflow import workflow
     flow_steps = _config['flow']
     if flow_steps is None:
         flow_steps = range(len(workflow))

@@ -3,8 +3,8 @@
     "${SEED_NAME}"
   ],
   "secondouts": {
-    "repetition_CDF": true,
-    "threshold": 0.1
+    "threshold": 0.1,
+    "plot_CDF": false
   },
   "distribute": {
     "measure": "pagerank",

@@ -11,7 +11,6 @@ class Separate(click.Option):
                 return
             return value.split(',')
         except Exception:
-            print('Separate')
             raise click.BadParameter(value)
 
     def __repr__(self):
@@ -57,7 +56,6 @@ class TypeChose(click.Choice):
                 try:
                     return choice(value, param, ctx)
                 except Exception:
-                    print('is not this type', type(choice))
                     pass
         else:
             raise click.BadParameter(value)

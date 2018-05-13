@@ -43,7 +43,7 @@ def run():
     pass_threshold = secondouts_conf['threshold']
     firstouts = {int(key) for key in relations.keys()}
     logging.info('FirstOut friends of seeds have %d people.' % len(firstouts))
-    if secondouts_conf['repetition_CDF']:
+    if secondouts_conf['plot_CDF']:
         plot_counter_cdf(counter)
     secondouts = secondouts_select(firstouts, counter, pass_threshold)
     save_secondout_friends(secondouts, _SECONDOUTS_CSV)
