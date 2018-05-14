@@ -1,5 +1,6 @@
 from lib.cli import FlowRange, Separate, cli, click, ops
 from lib.utils.config import parse_config
+from lib.utils.workflow import workflow
 
 DEFAULTS = {
     'config': 'config/tweetconf.json',
@@ -19,12 +20,14 @@ ops('--proxy-path', metavar='<path>', default=DEFAULTS['proxy'], type=click.Path
     help='set proxy file, proxy string in json list. Default: %s' % DEFAULTS['proxy'])
 ops('-p', '--proxy', metavar='<proxy[, ...]>', cls=Separate,
     help='set proxy uri list, separated by comma. will override `--proxy-path` set.')
-ops('-f', '--flow', metavar='<step>', cls=FlowRange,
-    help='set appoint a flow step to run. Default: all')
 ops('-d', '--daemon', is_flag=True, default=DEFAULTS['daemon'],
     help='to trigger the command run in daemon')
 ops('--log', metavar='<path>', default=DEFAULTS['log'], type=click.Path(),
     help='set the output log file. Default: %s' % DEFAULTS['log'])
+ops('-f', '--flow', metavar='<step>', cls=FlowRange,
+    help='set appoint a flow step to run. Default: all; workflows see below: \n' +
+         'step\tflowname\n' +
+         ''.join(['%s\t%s \n' % (step, name) for step, name in enumerate(workflow)]))
 
 
 @cli.resultcallback()

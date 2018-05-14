@@ -2,10 +2,11 @@
 import logging
 
 from lib.utils import _config
+from lib.utils.workflow import reflect_workflow
 
 
 def main():
-    from src.workflow import workflow
+    workflow = reflect_workflow()
     flow_steps = _config['flow']
     if flow_steps is None:
         flow_steps = range(len(workflow))
@@ -13,6 +14,7 @@ def main():
     for step in flow_steps:
         logging.info('Next workflow step: %d - %s' % (step, workflow[step].__name__))
         workflow[step].run()
+    logging.info('All workflow run accomplish, then will exit.')
 
 
 def run(as_daemon):

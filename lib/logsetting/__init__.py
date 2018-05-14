@@ -3,15 +3,12 @@
 Output the log to both log-file and console.
 """
 import logging
-import os
 import sys
 
 from lib.conffor import ensure_dir_exist
-from lib.utils import _config
 
 MSG_FORMAT = '%(asctime)s %(filename)s[line:%(lineno)d] %(levelname)s %(message)s'
 TIME_FORMAT = '%Y-%m-%d %H:%M:%S'
-LOG_FILE = _config['log']
 
 
 def format_stream(stream=sys.stdout,
@@ -33,7 +30,7 @@ def clear_logsetting():
 
 
 def reset_logbase(
-    filename=LOG_FILE, stream=sys.stdout,
+    filename=None, stream=sys.stdout,
     filemode='a',
     level=logging.INFO, msg_format=MSG_FORMAT, date_format=TIME_FORMAT,
 ):
@@ -44,9 +41,8 @@ def reset_logbase(
         'filemode': filemode
     }
     root = clear_logsetting()
-    ensure_dir_exist(filename)
-    logging.basicConfig(filename=filename, **format_config)
+    if filename:
+        ensure_dir_exist(filename)
+        logging.basicConfig(filename=filename, **format_config)
     if stream:
         root.addHandler(format_stream(stream, level, msg_format, date_format))
-    if filename is not LOG_FILE and os.path.isfile(LOG_FILE):
-        os.remove(LOG_FILE)

@@ -14,7 +14,7 @@ import click
 # $ export LC_ALL=en_US.UTF-8
 locale.setlocale(locale.LC_ALL, 'en_US.UTF-8')
 click.disable_unicode_literals_warning = True
-LENIENT_CONTEXT = dict(ignore_unknown_options=True, allow_extra_args=True)
+LENIENT_CONTEXT = dict(terminal_width=167, ignore_unknown_options=True, allow_extra_args=True)
 
 
 @click.group(name='tweetopo', invoke_without_command=True,
