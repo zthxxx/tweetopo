@@ -15,7 +15,7 @@ def store_people_details(twitter, uid=None):
 
 
 def start_crawling_people_details(tokens, unfounds):
-    multi_tweecrawl(tokens, unfounds, callback=store_people_details)
+    multi_tweecrawl(tokens, unfounds, resolve=store_people_details)
 
 
 def crawl_detail_from_hub():

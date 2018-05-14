@@ -11,10 +11,10 @@ _FRIENDS_COUNT_MAX_ = 10000
 
 def authentication(method):
     def judge(self, *args, **kwargs):
-        if not self._api:
-            raise tweepy.TweepError('Api NOT inited!')
-        if not self._user:
-            raise tweepy.TweepError('User NOT inited!')
+        if not self.api:
+            raise tweepy.TweepError('Twitter api NOT ready!')
+        if not self.user:
+            raise tweepy.TweepError('Twitter user NOT ready!')
         method(self, *args, **kwargs)
         return self
 
@@ -33,9 +33,9 @@ class Twitter:
                  access_token, access_token_secret,
                  proxy=''
                  ):
-        self._api = None
-        self._user = None
-        self._config = {
+        self.api = None
+        self.user = None
+        self.config = {
             'consumer_key': consumer_key,
             'consumer_secret': consumer_secret,
             'access_token': access_token,
@@ -45,7 +45,7 @@ class Twitter:
         self.get_tweeapi()
 
     def get_tweeapi(self):
-        config = self._config
+        config = self.config
         auth = tweepy.OAuthHandler(config['consumer_key'], config['consumer_secret'])
         auth.set_access_token(config['access_token'], config['access_token_secret'])
         api = tweepy.API(
@@ -54,29 +54,33 @@ class Twitter:
             wait_on_rate_limit_notify=True,
             timeout=300,
             compression=True,
-            proxy=config.get('proxy', '')
+            proxy=config['proxy']
         )
-        self._api = api
+        self.api = api
         return self
 
     @retry(wait_random_min=15 * 1000, wait_random_max=25 * 1000, stop_max_attempt_number=5)
-    def get_user(self, uid=None, name=None):
-        if not self._api:
-            raise tweepy.TweepError('Api NOT inited!')
+    def get_user(self, uid=None, name=None, resolve=None, reject=None):
+        if not self.api:
+            raise tweepy.TweepError('Twitter api NOT ready!')
         try:
-            user = self._api.get_user(user_id=uid, screen_name=name)
-            self._user = user
+            user = self.api.get_user(user_id=uid, screen_name=name)
+            self.user = user
+            if callable(resolve):
+                resolve(user)
         except tweepy.TweepError as e:
             logging.error('Uid ({0}) and name ({1}) has error: {2}'.format(uid, name, e))
+            if callable(reject):
+                reject(uid, name, e)
             if e.api_code in self._IGNORE_ERROR_CODES:
                 return None
             raise e
         return self
 
     @authentication
-    def get_friends(self, callback, pages_limit=0):
-        api = self._api
-        user = self._user
+    def get_friends(self, resolve=None, reject=None, pages_limit=0):
+        api = self.api
+        user = self.user
         if user.friends_count > _FRIENDS_COUNT_MAX_:
             logging.warning('The user [%d]-[%s] has too many [%d] friends!'
                             % (user.id, user.screen_name, user.friends_count))
@@ -86,51 +90,55 @@ class Twitter:
         try:
             for friends_page in cursor.pages(pages_limit):
                 friends.extend(friends_page)
-            if callable(callback):
-                callback(friends)
+            if callable(resolve):
+                resolve(friends)
         except tweepy.TweepError as e:
-            logging.warning([user.id, user.screen_name, e])
+            logging.error([user.id, user.screen_name, e])
+            if callable(reject):
+                reject(user, e)
 
     @authentication
     def store_user_relation(self, store=None, pages_limit=0):
-        user = self._user
+        if not callable(store):
+            return
+        user = self.user
         friends = []
 
-        def set_friends(list):
+        def set_friends(result):
             nonlocal friends
-            friends = list
+            friends = result
 
-        if callable(store):
-            self.get_friends(set_friends, pages_limit)
-            people = {
-                'name': user.screen_name,
-                'uid': user.id,
-                'protect': user.protected,
-                'friends_count': user.friends_count,
-                'friends': friends
-            }
-            store(**people)
+        self.get_friends(set_friends, None, pages_limit)
+        people = {
+            'name': user.screen_name,
+            'uid': user.id,
+            'protect': user.protected,
+            'friends_count': user.friends_count,
+            'friends': friends
+        }
+        store(**people)
 
     @authentication
     def store_user_details(self, store=None):
-        user = self._user
-        if callable(store):
-            people = {
-                'uid': user.id,
-                'name': user.screen_name,
-                'fullname': user.name,
-                'description': user.description,
-                'sign_at': user.created_at,
-                'location': user.location,
-                'time_zone': user.time_zone,
-                'friends_count': user.friends_count,
-                'followers_count': user.followers_count,
-                'statuses_count': user.statuses_count,
-                'url': user.url,
-                'protect': user.protected,
-                'verified': user.verified
-            }
-            store(**people)
+        if not callable(store):
+            return
+        user = self.user
+        people = {
+            'uid': user.id,
+            'name': user.screen_name,
+            'fullname': user.name,
+            'description': user.description,
+            'sign_at': user.created_at,
+            'location': user.location,
+            'time_zone': user.time_zone,
+            'friends_count': user.friends_count,
+            'followers_count': user.followers_count,
+            'statuses_count': user.statuses_count,
+            'url': user.url,
+            'protect': user.protected,
+            'verified': user.verified
+        }
+        store(**people)
 
 
 def multi_tweecrawl(tokens, uids_queue, block=True, **kwargs):
@@ -139,24 +147,28 @@ def multi_tweecrawl(tokens, uids_queue, block=True, **kwargs):
     :param tokens: some twitter api tokens
     :param uids_queue: Queue of user ids
     :param block: is block for crawling
-    :param kwargs: kwargs of thead (callback)
+    :param kwargs: kwargs of thead (resolve)
     :return:
     """
 
-    def thread_from_queue(index, twitter, callback=None):
+    def thread_from_queue(index, twitter, resolve=None, reject=None):
         """
         :param index: thread index to start and sleep
         :param twitter: authentic instance of Twitter
-        :param callback: func of operate which receive two param (twitter, uid)
+        :param resolve: func of operate which receive two param (twitter, uid)
+        :param reject: func of error operate which receive two param (twitter, uid)
         """
+        if not callable(resolve):
+            raise tweepy.TweepError('resolve is need in twitter crawl callback!')
         time.sleep(index)
         logging.info('Twitter thead-%d : tasks started!' % index)
-        if callable(callback):
-            while not uids_queue.empty():
-                uid = uids_queue.get_nowait()
-                if twitter.get_user(uid=uid) is None:
-                    continue
-                callback(twitter, uid=uid)
+        while not uids_queue.empty():
+            uid = uids_queue.get_nowait()
+            if twitter.get_user(uid=uid) is None:
+                if callable(reject):
+                    reject(twitter, uid=uid)
+                continue
+            resolve(twitter, uid=uid)
         logging.info('Twitter thead-%d : task complete!' % index)
 
     tasks = []

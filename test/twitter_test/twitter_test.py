@@ -27,17 +27,17 @@ def setup_module():
 
 def try_none_api_user(twitter):
     try:
-        twitter.get_friends(None)
+        twitter.get_friends()
     except Exception as e:
         logging.info('None of api or user for get friends should be error.')
         logging.info(e)
 
 
 def test_get_api():
-    api = twitter._api
-    twitter._api = None
+    api = twitter.api
+    twitter.api = None
     try_none_api_user(twitter)
-    twitter._api = api
+    twitter.api = api
     try_none_api_user(twitter)
     twitter.get_user(name=seed_name)
 
@@ -81,8 +81,8 @@ def test_store_user_details():
 def test_multi_tweecrawl():
     # need seed_user_uid and uids_queue inited.
     def crawl_callback(twitter, uid):
-        assert twitter._api is not None
-        assert twitter._user is not None
+        assert twitter.api is not None
+        assert twitter.user is not None
         assert uid == seed_user_uid
 
     multi_tweecrawl(tokens, uids_queue, callback=crawl_callback)

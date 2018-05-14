@@ -37,7 +37,7 @@ def get_crawl_queue(seed_name):
 
 
 def start_crawling_relation(tokens, unfounds):
-    multi_tweecrawl(tokens, unfounds, callback=store_relation)
+    multi_tweecrawl(tokens, unfounds, resolve=store_relation)
 
 
 def run():
