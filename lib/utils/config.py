@@ -32,7 +32,7 @@ def parse_config(options):
     config.update(conffor.load(options['config']))
     merge = {
         'twitter': tokens,
-        'seed_name': options['user'] or config['seed_name'],
+        'account_seed': options['user'] or config['account_seed'],
         'flow': options.get('flow'),
         'daemon': options['daemon'],
         'log': options['log']

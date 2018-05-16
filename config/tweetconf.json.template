@@ -1,6 +1,6 @@
 {
-  "seed_name": [
-    "${SEED_NAME}"
+  "account_seed": [
+    "${ACCOUNT_SEED}"
   ],
   "secondouts": {
     "threshold": 0.1,

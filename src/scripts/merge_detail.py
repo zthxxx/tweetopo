@@ -30,13 +30,13 @@ def filter_persons_unfocus():
     secondouts = [(uid, *(None,) * ranks_length, repeats)
                   for uid, repeats in secondouts_all.items() if uid in focus]
     columns = _HUB_USERS_COLUMNS + _FOCUS_USERS_COLUMNS[1:]
-    return firstouts + secondouts, columns
+    return columns, firstouts + secondouts
 
 
 def merge_hub_details(filename):
     persons_data = conffor.load(_HUB_USERS_JSON)
     detail_cols = _HUB_DETAILS_COLUMNS[1:]
-    user_lines, user_columns = filter_persons_unfocus()
+    user_columns, user_lines = filter_persons_unfocus()
     titles = [fields[column] for column in user_columns + detail_cols]
     details = []
     for person in user_lines:

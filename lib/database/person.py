@@ -5,22 +5,27 @@ from mongoengine import *
 
 from lib.conffor import conffor
 
-PERSON_FIELD = ['uid', 'name', 'fullname', 'description', 'sign_at', 'location', 'time_zone',
-                'friends_count', 'followers_count', 'statuses_count', 'url', 'protect', 'verified']
+PERSON_FIELD = ['uid', 'account', 'username', 'description', 'avatar', 'url', 'sign_at', 'location', 'time_zone',
+                'friends_count', 'followers_count', 'statuses_count', 'favourites_count', 'protect', 'verified']
 
 
 class Person(Document):
+    """
+    object field ref: https://developer.twitter.com/en/docs/tweets/data-dictionary/overview/user-object
+    """
     uid = IntField(required=True, primary_key=True)
-    name = StringField()
-    fullname = StringField()
+    account = StringField()
+    username = StringField()
     description = StringField()
+    avatar = StringField()
+    url = StringField()
     sign_at = DateTimeField()
     location = StringField()
     time_zone = StringField()
     friends_count = IntField()
     followers_count = IntField()
     statuses_count = IntField()
-    url = StringField()
+    favourites_count = IntField()
     protect = BooleanField()
     verified = BooleanField()
     meta = {
@@ -28,19 +33,19 @@ class Person(Document):
     }
 
 
-def people_save(name, uid, **kwargs):
-    people = Person(name=name, uid=uid, **kwargs)
+def people_save(uid, account, **kwargs):
+    people = Person(uid=uid, account=account, **kwargs)
     try:
         people.save()
-    except NotUniqueError as e:
-        logging.warning([people.uid, people.name, 'has exist person collection..'])
+    except NotUniqueError:
+        logging.warning([people.uid, people.account, 'has exist person collection..'])
 
 
-def people_find(name='', uid=None):
+def people_find(account='', uid=None):
     if uid is not None:
         people = Person.objects(uid=uid).first()
     else:
-        people = Person.objects(name=name).first()
+        people = Person.objects(account=account).first()
     return people
 
 

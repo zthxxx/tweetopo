@@ -6,7 +6,7 @@ from lib.utils.db import confirm_unfound_queue, db
 relate_store = db.relation.people_save
 relate_query = db.relation.people_find
 
-seed_name = _config['seed_name']
+account_seed = _config['account_seed']
 tokens = _config['twitter']
 
 
@@ -14,23 +14,23 @@ def store_relation(twitter, uid=None):
     twitter.store_user_relation(relate_store)
 
 
-def get_seed_people(seed_name):
-    people = relate_query(name=seed_name)
+def get_seed_people(account_seed):
+    people = relate_query(account=account_seed)
     if not people:
         Twitter(**tokens[0]) \
-            .get_user(name=seed_name) \
+            .get_user(account=account_seed) \
             .store_user_relation(relate_store)
-        people = relate_query(name=seed_name)
+        people = relate_query(account=account_seed)
     return people
 
 
-def get_crawl_queue(seed_name):
+def get_crawl_queue(account_seed):
     friends = []
     founds = db.relation.get_uids()
-    if not isinstance(seed_name, list):
-        seed_name = [seed_name]
-    for seed in seed_name:
-        people = get_seed_people(seed)
+    if not isinstance(account_seed, list):
+        account_seed = [account_seed]
+    for account in account_seed:
+        people = get_seed_people(account)
         friends.extend(people.friends)
     unfounds = confirm_unfound_queue(friends, founds)
     return unfounds
@@ -41,5 +41,5 @@ def start_crawling_relation(tokens, unfounds):
 
 
 def run():
-    unfounds = get_crawl_queue(seed_name)
+    unfounds = get_crawl_queue(account_seed)
     start_crawling_relation(tokens, unfounds)

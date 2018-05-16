@@ -6,7 +6,7 @@ from lib.utils.field import get_hub_uids, get_secondouts_uids
 
 detail_store = db.person.people_save
 
-seed_name = _config['seed_name']
+account_seed = _config['account_seed']
 tokens = _config['twitter']
 
 

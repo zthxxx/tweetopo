@@ -14,8 +14,9 @@ PERSON_LENGTH = 5
 EXPORT_STORE_FILE = './twitter_relations.test.json'
 
 info = {
-    'name': 'testname',
     'uid': uid_base,
+    'account': 'testname',
+    'username': 'this is my name',
     'protect': False,
     'friends_count': 4,
     'friends': [uid_base, uid_base + 1, uid_base + 2, uid_base + 3]
@@ -43,8 +44,8 @@ def test_save_many_diff():
 
 def test_person_find():
     index = uid_base
-    people = query(name=info['name'])
-    assert people.name == info['name']
+    people = query(account=info['account'])
+    assert people.account == info['account']
     for i in range(0, PERSON_LENGTH):
         people = query(uid=index + i)
         assert people.uid == index + i
@@ -66,7 +67,7 @@ def test_get_person_uids():
 
 
 def test_export_person_collection():
-    relation.export_relation(EXPORT_STORE_FILE, seed_name=info['name'], limit=10)
+    relation.export_relation(EXPORT_STORE_FILE, account_seed=info['account'], limit=10)
 
 
 def test_person_del_all():

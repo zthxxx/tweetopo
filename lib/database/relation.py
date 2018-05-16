@@ -7,29 +7,35 @@ from lib.conffor import conffor
 
 
 class Relation(Document):
-    name = StringField()
+    """
+    uid: alias of twitter user object id
+    account: alias of twitter user object screen_name
+    username: alias of twitter user object name
+    """
     uid = IntField(required=True, primary_key=True)
+    account = StringField()
+    username = StringField()
+    protect = BooleanField()
     friends_count = IntField()
     friends = ListField()
-    protect = BooleanField()
     meta = {
         'indexes': ['#uid']
     }
 
 
-def people_save(name, uid, protect, friends_count, friends):
-    people = Relation(name=name, uid=uid, protect=protect, friends_count=friends_count, friends=friends)
+def people_save(uid, account, **kwargs):
+    people = Relation(uid=uid, account=account, **kwargs)
     try:
         people.save()
-    except NotUniqueError as e:
-        logging.warning([people.uid, people.name, 'has exist in relation collection.'])
+    except NotUniqueError:
+        logging.warning([people.uid, people.account, 'has exist in relation collection.'])
 
 
-def people_find(name='', uid=None):
+def people_find(account='', uid=None):
     if uid is not None:
         people = Relation.objects(uid=uid).first()
     else:
-        people = Relation.objects(name=name).first()
+        people = Relation.objects(account=account).first()
     return people
 
 
@@ -40,17 +46,17 @@ def get_uids():
     return uids
 
 
-def export_relation(filename, seed_name=None, limit=0):
+def export_relation(filename, account_seed=None, limit=0):
     persons = dict()
     person = Relation._get_collection()
     query_obj = {}
-    if seed_name:
+    if account_seed:
         uids = set()
         seed_uids = set()
-        if not isinstance(seed_name, list):
-            seed_name = [seed_name]
-        for name in seed_name:
-            people = people_find(name=name)
+        if not isinstance(account_seed, list):
+            account_seed = [account_seed]
+        for account in account_seed:
+            people = people_find(account=account)
             seed_uids.add(people.uid)
             uids.update(people.friends)
         uids.difference_update(seed_uids)

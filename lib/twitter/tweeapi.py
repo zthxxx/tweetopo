@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 import logging
-import time
 from threading import Thread
+import time
 
-import tweepy
 from retrying import retry
+import tweepy
 
 _FRIENDS_COUNT_MAX_ = 10000
 
@@ -60,18 +60,18 @@ class Twitter:
         return self
 
     @retry(wait_random_min=15 * 1000, wait_random_max=25 * 1000, stop_max_attempt_number=5)
-    def get_user(self, uid=None, name=None, resolve=None, reject=None):
+    def get_user(self, uid=None, account=None, resolve=None, reject=None):
         if not self.api:
             raise tweepy.TweepError('Twitter api NOT ready!')
         try:
-            user = self.api.get_user(user_id=uid, screen_name=name)
+            user = self.api.get_user(user_id=uid, screen_name=account)
             self.user = user
             if callable(resolve):
                 resolve(user)
         except tweepy.TweepError as e:
-            logging.error('Uid ({0}) and name ({1}) has error: {2}'.format(uid, name, e))
+            logging.error('Uid ({0}) and account ({1}) has error: {2}'.format(uid, account, e))
             if callable(reject):
-                reject(uid, name, e)
+                reject(uid, account, e)
             if e.api_code in self._IGNORE_ERROR_CODES:
                 return None
             raise e
@@ -98,6 +98,23 @@ class Twitter:
                 reject(user, e)
 
     @authentication
+    def get_timeline(self, resolve=None, reject=None, pages_limit=0):
+        api = self.api
+        user = self.user
+        cursor = tweepy.Cursor(api.user_timeline, user_id=user.id, screen_name=user.screen_name,
+                               trim_user=True, exclude_replies=False)
+        timeline = []
+        try:
+            for timeline_page in cursor.pages(pages_limit):
+                timeline.extend(timeline_page)
+            if callable(resolve):
+                resolve(timeline)
+        except tweepy.TweepError as e:
+            logging.error([user.id, user.screen_name, e])
+            if callable(reject):
+                reject(user, e)
+
+    @authentication
     def store_user_relation(self, store=None, pages_limit=0):
         if not callable(store):
             return
@@ -110,8 +127,9 @@ class Twitter:
 
         self.get_friends(set_friends, None, pages_limit)
         people = {
-            'name': user.screen_name,
             'uid': user.id,
+            'account': user.screen_name,
+            'username': user.name,
             'protect': user.protected,
             'friends_count': user.friends_count,
             'friends': friends
@@ -125,16 +143,18 @@ class Twitter:
         user = self.user
         people = {
             'uid': user.id,
-            'name': user.screen_name,
-            'fullname': user.name,
+            'account': user.screen_name,
+            'username': user.name,
             'description': user.description,
+            'avatar': user.profile_image_url_https,
+            'url': user.url,
             'sign_at': user.created_at,
             'location': user.location,
             'time_zone': user.time_zone,
             'friends_count': user.friends_count,
             'followers_count': user.followers_count,
             'statuses_count': user.statuses_count,
-            'url': user.url,
+            'favourites_count': user.favourites_count,
             'protect': user.protected,
             'verified': user.verified
         }

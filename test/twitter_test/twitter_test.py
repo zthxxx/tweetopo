@@ -5,9 +5,9 @@ import queue
 from lib.twitter.tweeapi import Twitter, multi_tweecrawl
 from lib.utils import _config
 
-seed_name = _config['seed_name']
-if isinstance(seed_name, list):
-    seed_name = seed_name[0]
+account_seed = _config['account_seed']
+if isinstance(account_seed, list):
+    account_seed = account_seed[0]
 tokens = _config['twitter']
 
 twitter = None
@@ -39,17 +39,17 @@ def test_get_api():
     try_none_api_user(twitter)
     twitter.api = api
     try_none_api_user(twitter)
-    twitter.get_user(name=seed_name)
+    twitter.get_user(account=account_seed)
 
 
 def test_store_user_relation():
     pages_limit = 1
     page_include = 5000
 
-    def store_simulate(name, uid, protect, friends_count, friends):
+    def store_simulate(uid, account, protect, friends_count, friends, **kwargs):
         # if callback, user must not protected.
         assert not protect
-        assert name == seed_name
+        assert account == account_seed
         assert isinstance(uid, int)
         assert len(friends) == min(pages_limit * page_include, friends_count)
 
@@ -58,16 +58,15 @@ def test_store_user_relation():
 
 def test_store_user_details():
     def store_simulate(
-        uid, name, fullname, description, sign_at, location,
-        time_zone, friends_count, followers_count,
-        statuses_count, url, protect, verified
+        uid, account, username, description, friends_count, followers_count,
+        statuses_count, protect, verified, **kwargs
     ):
         global seed_user_uid
-        assert name == seed_name
+        assert account == account_seed
         assert isinstance(uid, int)
         seed_user_uid = uid
         uids_queue.put(uid)
-        assert isinstance(fullname, str)
+        assert isinstance(username, str)
         assert isinstance(description, str)
         assert isinstance(friends_count, int)
         assert isinstance(followers_count, int)
@@ -86,6 +85,17 @@ def test_multi_tweecrawl():
         assert uid == seed_user_uid
 
     multi_tweecrawl(tokens, uids_queue, callback=crawl_callback)
+
+
+def get_user(uid=None, account=None):
+    user = None
+
+    def set_user(result):
+        nonlocal user
+        user = result
+
+    twitter.get_user(uid, account, set_user)
+    return user
 
 
 if __name__ == '__main__':
