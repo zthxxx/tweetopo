@@ -17,7 +17,7 @@ class Relation(Document):
     username = StringField()
     protect = BooleanField()
     friends_count = IntField()
-    friends = ListField()
+    friends = ListField(IntField())
     meta = {
         'indexes': ['#uid']
     }
@@ -40,29 +40,25 @@ def people_find(account='', uid=None):
 
 
 def get_uids():
-    person = Relation._get_collection()
-    uidcour = person.find({}, {'_id': 1})
-    uids = {people.get('_id') for people in uidcour}
+    cour = Relation.objects.only('uid')
+    uids = {people.uid for people in cour}
     return uids
 
 
-def export_relation(filename, account_seed=None, limit=0):
-    persons = dict()
-    person = Relation._get_collection()
-    query_obj = {}
+def export_relation(filename, account_seed=None, limit=None):
+    query = {}
     if account_seed:
-        uids = set()
-        seed_uids = set()
-        if not isinstance(account_seed, list):
+        if not (isinstance(account_seed, list) or isinstance(account_seed, set)):
             account_seed = [account_seed]
-        for account in account_seed:
-            people = people_find(account=account)
+        seed_uids = set()
+        uids = set()
+        cour = Relation.objects(account__in=account_seed).only('uid', 'friends')
+        for people in cour:
             seed_uids.add(people.uid)
             uids.update(people.friends)
         uids.difference_update(seed_uids)
-        query_obj['_id'] = {'$in': list(uids)}
-    cour = person.find(query_obj, {'_id': 1, 'friends': 1}).limit(limit)
-    for people in cour:
-        persons[people['_id']] = people['friends']
+        query['uid__in'] = uids
+    cour = Relation.objects(**query).only('uid', 'friends').limit(limit)
+    persons = {people.uid: people.friends for people in cour}
     conffor.dump(filename, persons, None)
     logging.info('Export Relation relationship complete.')

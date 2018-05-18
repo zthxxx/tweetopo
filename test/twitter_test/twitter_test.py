@@ -87,20 +87,29 @@ def test_multi_tweecrawl():
     multi_tweecrawl(tokens, uids_queue, callback=crawl_callback)
 
 
-def get_user(uid=None, account=None):
-    user = None
+def access_verify():
+    def log_invalid(auth, index):
+        logging.error('#%d token invalid or expired, tips: \n' % index +
+                      'consumer_key: %s \n' % auth.consumer_key +
+                      'access_token: %s' % auth.access_token)
 
-    def set_user(result):
-        nonlocal user
-        user = result
-
-    twitter.get_user(uid, account, set_user)
-    return user
+    token_count = len(tokens)
+    accessed = 0
+    for index, token in enumerate(tokens):
+        api = Twitter(**token).api
+        try:
+            user = api.verify_credentials()
+            if user:
+                accessed += 1
+                logging.warning('Succeed verify token %d/%d' % (accessed, token_count))
+            else:
+                log_invalid(api.auth, index)
+        except Exception as e:
+            log_invalid(api.auth, index)
+            logging.error(e)
+    logging.warning('Total succeed verify token %d/%d' % (accessed, token_count))
 
 
 if __name__ == '__main__':
+    # access_verify()
     setup_module()
-    test_get_api()
-    test_store_user_relation()
-    test_store_user_details()
-    test_multi_tweecrawl()

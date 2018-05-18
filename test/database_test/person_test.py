@@ -16,8 +16,8 @@ EXPORT_STORE_FILE = './twitter_persons.test.json'
 
 info = {
     'uid': uid_base,
-    'account': 'testname',
-    'username': 'Test Full name',
+    'account': 'account_name',
+    'username': 'Test user name',
     'description': 'This people info for unit test.',
     'sign_at': datetime.now(),
     'protect': False,
@@ -43,7 +43,7 @@ def test_save_many_diff():
     for i in range(0, PERSON_LENGTH):
         people_info_save(info)
         info['uid'] = info['uid'] + 1
-    assert Person.objects().count() == 1 + i
+        assert Person.objects().count() == 1 + i
 
 
 def test_person_find():
