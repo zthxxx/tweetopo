@@ -113,3 +113,7 @@ def access_verify():
 if __name__ == '__main__':
     # access_verify()
     setup_module()
+    test_get_api()
+    test_store_user_relation()
+    test_store_user_details()
+    test_multi_tweecrawl()

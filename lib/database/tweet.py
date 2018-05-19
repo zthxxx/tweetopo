@@ -3,7 +3,7 @@ import logging
 from mongoengine import *
 
 from lib.conffor import conffor
-from lib.database import doc2dict
+from lib.database.mongo_operator import doc2dict
 
 
 class User(EmbeddedDocument):
@@ -31,14 +31,15 @@ class Tweet(Document):
     account = StringField()
     username = StringField()
     text = StringField()
-    mention = ListField(EmbeddedDocumentField(User))
     created = DateTimeField()
-    media = ListField(EmbeddedDocumentField(Media))
     reply_count = IntField()
     retweet_count = IntField()
     favorite_count = IntField()
+    mention = ListField(EmbeddedDocumentField(User))
     reply_to = EmbeddedDocumentField(ReplyTo)
+    hashtag = ListField(StringField())
     quote_with = IntField()
+    media = ListField(EmbeddedDocumentField(Media))
     meta = {
         'indexes': ['#id']
     }

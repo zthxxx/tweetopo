@@ -4,7 +4,7 @@ import logging
 from mongoengine import *
 
 from lib.conffor import conffor
-from lib.database import doc2dict
+from lib.database.mongo_operator import doc2dict
 
 PERSON_FIELD = ['uid', 'account', 'username', 'description', 'avatar', 'url', 'sign_at', 'location', 'time_zone',
                 'friends_count', 'followers_count', 'statuses_count', 'favourites_count', 'protect', 'verified']

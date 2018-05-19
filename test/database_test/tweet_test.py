@@ -21,20 +21,20 @@ def mock_tweet(id, uid):
         'account': 'testname',
         'username': 'Test Full name',
         'text': 'This a mock tweet text.',
+        'created': datetime.now(),
+        'reply_count': 4,
+        'retweet_count': 8,
+        'favorite_count': 6,
         'mention': [{
             'uid': uid + 1,
             'account': 'other_account',
             'username': 'other username',
         }],
-        'created': datetime.now(),
         'media': [{
             'id': randint(10086, 12315),
             'type': 'video',
             'url': 'https://twitter.com/video/id/xxx'
-        }],
-        'reply_count': 4,
-        'retweet_count': 8,
-        'favorite_count': 6
+        }]
     }
 
 
