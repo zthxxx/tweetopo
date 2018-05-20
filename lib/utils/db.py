@@ -3,10 +3,11 @@ import logging
 import queue
 
 import lib.database as db
-from lib.utils.config import config
+from lib.utils import _config
 
-db_conf = config['mongo']
+db_conf = _config['mongo']
 db.set_connect(**db_conf)
+db.add_log4mongo()
 
 
 def confirm_unfound_queue(total, founds):

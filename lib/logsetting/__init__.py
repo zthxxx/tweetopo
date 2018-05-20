@@ -7,7 +7,7 @@ import sys
 
 from lib.conffor import ensure_dir_exist
 
-MSG_FORMAT = '%(asctime)s %(filename)s[line:%(lineno)d] %(levelname)s %(message)s'
+MSG_FORMAT = '%(asctime)s <%(name)s: %(threadName)s> %(filename)s[line:%(lineno)d] %(levelname)s %(message)s'
 TIME_FORMAT = '%Y-%m-%d %H:%M:%S'
 
 
@@ -25,6 +25,7 @@ def format_stream(stream=sys.stdout,
 
 def clear_logsetting():
     root = logging.getLogger()
+    root.setLevel(logging.DEBUG)
     root.handlers = []
     return root
 

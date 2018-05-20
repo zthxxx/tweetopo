@@ -149,7 +149,7 @@ def multi_tweecrawl(tokens, uids_queue, block=True, **kwargs):
         if uids_queue.empty() or uids_queue.qsize() < index + 1:
             break
         twitter = Twitter(**token)
-        task = Thread(name='Theading-%d' % (index + 1), target=thread_from_queue, args=(index + 1, twitter),
+        task = Thread(name='twitter-token-%d' % (index + 1), target=thread_from_queue, args=(index + 1, twitter),
                       kwargs=kwargs)
         tasks.append(task)
         task.start()

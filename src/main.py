@@ -6,6 +6,11 @@ from lib.utils.workflow import reflect_workflow
 
 
 def main():
+    from lib.utils.db import db
+    db.add_log4mongo()
+
+    logging.info('Link Start !!! \n')
+
     workflow = reflect_workflow()
     flow_steps = _config['flow']
     if flow_steps is None:
@@ -14,11 +19,10 @@ def main():
     for step in flow_steps:
         logging.info('Next workflow step: %d - %s' % (step, workflow[step].__name__))
         workflow[step].run()
-    logging.info('All workflow run accomplish, then will exit.')
+    logging.info('All workflow run accomplish, then will exit.\n')
 
 
 def run(as_daemon):
-    logging.info('Link Start !!! \n')
     if not as_daemon:
         main()
         return
