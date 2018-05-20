@@ -11,7 +11,25 @@ tokens = _config['twitter']
 
 
 def store_people_details(twitter, uid=None):
-    twitter.store_user_details(detail_store)
+    user = twitter.user
+    people = {
+        'uid': user.id,
+        'account': user.screen_name,
+        'username': user.name,
+        'description': user.description,
+        'avatar': user.profile_image_url_https,
+        'url': user.url,
+        'sign_at': user.created_at,
+        'location': user.location,
+        'time_zone': user.time_zone,
+        'friends_count': user.friends_count,
+        'followers_count': user.followers_count,
+        'statuses_count': user.statuses_count,
+        'favourites_count': user.favourites_count,
+        'protect': user.protected,
+        'verified': user.verified
+    }
+    detail_store(**people)
 
 
 def start_crawling_people_details(tokens, unfounds):

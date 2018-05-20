@@ -79,19 +79,20 @@ class Twitter:
 
     @authentication
     def get_friends(self, resolve=None, reject=None, pages_limit=0):
+        if not callable(resolve):
+            return
         api = self.api
         user = self.user
         if user.friends_count > _FRIENDS_COUNT_MAX_:
             logging.warning('The user [%d]-[%s] has too many [%d] friends!'
                             % (user.id, user.screen_name, user.friends_count))
             return
-        cursor = tweepy.Cursor(api.friends_ids, user_id=user.uid, screen_name=user.screen_name)
+        cursor = tweepy.Cursor(api.friends_ids, user_id=user.id, screen_name=user.screen_name, count=user.friends_count)
         friends = []
         try:
             for friends_page in cursor.pages(pages_limit):
                 friends.extend(friends_page)
-            if callable(resolve):
-                resolve(friends)
+            resolve(user, friends)
         except tweepy.TweepError as e:
             logging.error([user.id, user.screen_name, e])
             if callable(reject):
@@ -111,52 +112,6 @@ class Twitter:
             logging.error([user.id, user.screen_name, e])
             if callable(reject):
                 reject(user.id, user.screen_name, e)
-
-    @authentication
-    def store_user_relation(self, store=None, pages_limit=0):
-        if not callable(store):
-            return
-        user = self.user
-        friends = []
-
-        def set_friends(result):
-            nonlocal friends
-            friends = result
-
-        self.get_friends(set_friends, None, pages_limit)
-        people = {
-            'uid': user.id,
-            'account': user.screen_name,
-            'username': user.name,
-            'protect': user.protected,
-            'friends_count': user.friends_count,
-            'friends': friends
-        }
-        store(**people)
-
-    @authentication
-    def store_user_details(self, store=None):
-        if not callable(store):
-            return
-        user = self.user
-        people = {
-            'uid': user.id,
-            'account': user.screen_name,
-            'username': user.name,
-            'description': user.description,
-            'avatar': user.profile_image_url_https,
-            'url': user.url,
-            'sign_at': user.created_at,
-            'location': user.location,
-            'time_zone': user.time_zone,
-            'friends_count': user.friends_count,
-            'followers_count': user.followers_count,
-            'statuses_count': user.statuses_count,
-            'favourites_count': user.favourites_count,
-            'protect': user.protected,
-            'verified': user.verified
-        }
-        store(**people)
 
 
 def multi_tweecrawl(tokens, uids_queue, block=True, **kwargs):

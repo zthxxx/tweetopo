@@ -42,39 +42,44 @@ def test_get_api():
     twitter.get_user(account=account_seed)
 
 
-def test_store_user_relation():
+def test_user_get_friends():
     pages_limit = 1
     page_include = 5000
 
-    def store_simulate(uid, account, protect, friends_count, friends, **kwargs):
+    def resolve_simulate(user, friends):
         # if callback, user must not protected.
-        assert not protect
-        assert account == account_seed
-        assert isinstance(uid, int)
-        assert len(friends) == min(pages_limit * page_include, friends_count)
+        assert not user.protected
+        assert user.screen_name == account_seed
+        assert isinstance(user.id, int)
+        assert len(friends) == min(pages_limit * page_include, user.friends_count)
 
-    twitter.store_user_relation(store=store_simulate, pages_limit=pages_limit)
+    twitter.get_friends(resolve_simulate, pages_limit=pages_limit)
 
 
-def test_store_user_details():
-    def store_simulate(
-        uid, account, username, description, friends_count, followers_count,
-        statuses_count, protect, verified, **kwargs
-    ):
-        global seed_user_uid
-        assert account == account_seed
-        assert isinstance(uid, int)
-        seed_user_uid = uid
-        uids_queue.put(uid)
-        assert isinstance(username, str)
-        assert isinstance(description, str)
-        assert isinstance(friends_count, int)
-        assert isinstance(followers_count, int)
-        assert isinstance(statuses_count, int)
-        assert isinstance(protect, bool)
-        assert isinstance(verified, bool)
+def test_user_field_type():
+    user = twitter.user
+    global seed_user_uid
+    assert user.screen_name == account_seed
+    assert isinstance(user.id, int)
+    seed_user_uid = user.id
+    uids_queue.put(user.id)
+    assert isinstance(user.name, str)
+    assert isinstance(user.description, str)
+    assert isinstance(user.friends_count, int)
+    assert isinstance(user.followers_count, int)
+    assert isinstance(user.statuses_count, int)
+    assert isinstance(user.protected, bool)
+    assert isinstance(user.verified, bool)
 
-    twitter.store_user_details(store=store_simulate)
+
+def test_get_timeline():
+    pages_limit = 1
+    page_include = 200
+
+    def resolve_simulate(statuses):
+        assert len(statuses) == min(pages_limit * page_include, twitter.user.statuses_count)
+
+    twitter.get_timeline(resolve_simulate, pages_limit=pages_limit)
 
 
 def test_multi_tweecrawl():
@@ -114,6 +119,7 @@ if __name__ == '__main__':
     # access_verify()
     setup_module()
     test_get_api()
-    test_store_user_relation()
-    test_store_user_details()
+    test_user_get_friends()
+    test_user_field_type()
+    test_get_timeline()
     test_multi_tweecrawl()
