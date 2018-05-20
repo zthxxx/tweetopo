@@ -85,7 +85,7 @@ class Twitter:
             logging.warning('The user [%d]-[%s] has too many [%d] friends!'
                             % (user.id, user.screen_name, user.friends_count))
             return
-        cursor = tweepy.Cursor(api.friends_ids, user_id=user.id, screen_name=user.screen_name)
+        cursor = tweepy.Cursor(api.friends_ids, user_id=user.uid, screen_name=user.screen_name)
         friends = []
         try:
             for friends_page in cursor.pages(pages_limit):
@@ -99,20 +99,18 @@ class Twitter:
 
     @authentication
     def get_timeline(self, resolve=None, reject=None, pages_limit=0):
+        if not callable(resolve):
+            return
         api = self.api
         user = self.user
-        cursor = tweepy.Cursor(api.user_timeline, user_id=user.id, screen_name=user.screen_name,
-                               trim_user=True, exclude_replies=False)
-        timeline = []
+        cursor = tweepy.Cursor(api.user_timeline, user_id=user.id, screen_name=user.screen_name, count=200)
         try:
-            for timeline_page in cursor.pages(pages_limit):
-                timeline.extend(timeline_page)
-            if callable(resolve):
-                resolve(timeline)
+            for statuses in cursor.pages(pages_limit):
+                resolve(statuses)
         except tweepy.TweepError as e:
             logging.error([user.id, user.screen_name, e])
             if callable(reject):
-                reject(user, e)
+                reject(user.id, user.screen_name, e)
 
     @authentication
     def store_user_relation(self, store=None, pages_limit=0):

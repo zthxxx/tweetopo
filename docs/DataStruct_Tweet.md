@@ -18,9 +18,11 @@ ref docs:
     "username": String, // alias `name` in user-object"
     "text": String,
     "created": Date,  // alias `created_at` in tweet-object
-    "reply_count": Number,
+    "reply_count": Number,	// only available with the Premium
+    "quote_count": Number,	// only available with the Premium
     "retweet_count": Number,
     "favorite_count": Number,
+    "hashtags": Array(String)    // mean `entities.hashtag.text` in tweet-object,
     "mention": [{       // mean `entities.user_mentions` in tweet-object
         "uid": Number,  // alias `id` in user-object
         "account": String, // alias `screen_name` in user-object
@@ -31,7 +33,7 @@ ref docs:
         "uid": Number,  // alias `id` in user-object
         "account": String   // alias `screen_name` in user-object
     },
-    "hashtag": Array(String)    // mean `entities.hashtag.text` in tweet-object,
+    "retweet_with": Number,   // alias `retweeted_status.id` in tweet-object
     "quote_with": Number,   // alias `quoted_status_id` in tweet-object
     "media": [{         // mean `extended_entities.media` in tweet-object
         "id": Number,   // the media id in tweet entities.media

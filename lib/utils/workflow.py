@@ -9,7 +9,8 @@ workflow = [
     'crawling_detail',
     'export_persons',
     'hit_rules',
-    'merge_detail'
+    'merge_detail',
+    'fetch_hub_tweets'
 ]
 
 
