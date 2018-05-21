@@ -51,9 +51,10 @@ def export_relation(filename, account_seed=None, limit=None):
     if account_seed:
         if not isinstance(account_seed, Iterable):
             account_seed = [account_seed]
-        uids = set(account_seed)
+        uids = set()
         cour = Relation.objects(account__in=account_seed).only('uid', 'friends')
         for people in cour:
+            uids.add(people.uid)
             uids.update(people.friends)
         query['uid__in'] = uids
     cour = Relation.objects(**query).only('uid', 'friends').limit(limit)
