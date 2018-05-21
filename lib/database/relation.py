@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from collections import Iterable
 import logging
 
 from mongoengine import *
@@ -48,15 +49,12 @@ def get_uids():
 def export_relation(filename, account_seed=None, limit=None):
     query = {}
     if account_seed:
-        if not (isinstance(account_seed, list) or isinstance(account_seed, set)):
+        if not isinstance(account_seed, Iterable):
             account_seed = [account_seed]
-        seed_uids = set()
-        uids = set()
+        uids = set(account_seed)
         cour = Relation.objects(account__in=account_seed).only('uid', 'friends')
         for people in cour:
-            seed_uids.add(people.uid)
             uids.update(people.friends)
-        uids.difference_update(seed_uids)
         query['uid__in'] = uids
     cour = Relation.objects(**query).only('uid', 'friends').limit(limit)
     persons = {people.uid: people.friends for people in cour}

@@ -21,12 +21,13 @@ def save_hub_persons(nodes, filename):
 
 def run():
     distribute = _config['distribute']
+    seeds = _config['account_seed']
     logging.info('Loading mutual friends csv ...')
     edges = read_mutual_friends()
 
     logging.info('Friends distribution analysis ...')
     drawer = DrawDistribution(edges, measure=distribute['measure'])
-    drawer.filter_ranks(distribute['threshold'])
+    drawer.filter_ranks(distribute['threshold'], exclude=seeds)
     nodes = drawer.get_nodes()
     logging.info('Select count of hubs user are %d' % len(nodes))
     save_hub_persons(nodes, _HUB_USERS_CSV)

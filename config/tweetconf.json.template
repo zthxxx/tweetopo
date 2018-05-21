@@ -7,6 +7,7 @@
     "plot_CDF": false
   },
   "distribute": {
+    "weight": false,
     "measure": "pagerank",
     "threshold": false,
     "plot_graph": false

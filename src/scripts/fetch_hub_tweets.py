@@ -3,6 +3,8 @@ from lib.utils import _config
 from lib.utils.db import confirm_unfound_queue, db
 from lib.utils.field import get_hub_uids, get_secondouts_uids
 
+from .merge_detail import read_focus_hub
+
 tweet_store = db.tweet.tweet_save
 
 account_seed = _config['account_seed']
@@ -139,5 +141,12 @@ def fetch_tweets_from_hub():
     start_fetch_tweets(tokens, uids)
 
 
+def fetch_tweets_from_focus():
+    focus = read_focus_hub()
+    uids = list(focus)
+    start_fetch_tweets(tokens, uids)
+
+
 def run():
-    fetch_tweets_from_hub()
+    # fetch_tweets_from_hub()
+    fetch_tweets_from_focus()

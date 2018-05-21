@@ -1,6 +1,5 @@
-# -*- coding: utf-8 -*-
 from lib.twitter.tweeapi import Twitter, multi_tweecrawl
-from lib.utils import _config
+from lib.utils import _config, args2set
 from lib.utils.db import confirm_unfound_queue, db
 
 relate_store = db.relation.people_save
@@ -36,12 +35,11 @@ def get_seed_people(account_seed):
     return people
 
 
-def get_crawl_queue(account_seed):
+@args2set
+def get_crawl_queue(account_seeds):
     friends = []
     founds = db.relation.get_uids()
-    if not isinstance(account_seed, list):
-        account_seed = [account_seed]
-    for account in account_seed:
+    for account in account_seeds:
         people = get_seed_people(account)
         friends.extend(people.friends)
     unfounds = confirm_unfound_queue(friends, founds)

@@ -10,8 +10,7 @@ pickup = rule['pickup']
 
 
 def match_focus(message):
-    if message is not None:
+    if isinstance(message, str):
         for pattern in rule_patterns:
-            if pattern.search(message) is not None:
+            if pattern.search(message):
                 return True
-    return False
