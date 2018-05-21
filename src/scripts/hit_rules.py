@@ -2,11 +2,11 @@
 import logging
 
 from lib.conffor import conffor, csvtor as csv
-from lib.utils.field import _FOCUS_USERS_COLUMNS, _FOCUS_USERS_CSV, \
-    _HUB_USERS_JSON, _RELATION_FILE, get_hub_uids
+from lib.utils.field import _FOCUS_DETAIL_FIELD, _FOCUS_USERS_COLUMNS, \
+    _FOCUS_USERS_CSV, _HUB_USERS_JSON, _RELATION_FILE, get_hub_uids
 from lib.utils.focus import match_focus, pickup
 
-focus_columns = ['name', 'fullname', 'description', 'location', 'time_zone']
+focus_columns = _FOCUS_DETAIL_FIELD
 
 
 def hit_focus():
@@ -15,7 +15,7 @@ def hit_focus():
     for uid, person in persons_data.items():
         # person['focus'] = False
         for column in focus_columns:
-            if match_focus(person[column]):
+            if match_focus(person.get(column)):
                 # person['focus'] = True
                 hits.add(int(uid))
                 break

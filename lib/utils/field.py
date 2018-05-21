@@ -18,6 +18,7 @@ _HUB_DETAILS_CSV = _DATA_ROOT % 'hub_details.csv'
 
 _SECONDOUTS_COLUMNS = ['uid', 'repeats']
 _MUTUAL_FRIENDS_COLUMNS = ['user', 'friend', 'weight']
+_FOCUS_DETAIL_FIELD = ['account', 'username', 'description', 'location', 'time_zone']
 _HUB_USERS_COLUMNS = ['uid', 'degree', 'pagerank', 'clustering']
 _HUB_DETAILS_COLUMNS = PERSON_FIELD
 _FOCUS_USERS_COLUMNS = ['uid', 'rule']
