@@ -11,27 +11,25 @@ focus_columns = _FOCUS_DETAIL_FIELD
 
 
 def hit_focus(account_seed):
-    seeds = set()
+    hub_seed = set()
     hits = set()
     persons_data = conffor.load(_HUB_USERS_JSON)
     for uid, person in persons_data.items():
         if person['account'] in account_seed:
-            seeds.add(person['uid'])
-        # person['focus'] = False
+            hub_seed.add(person['uid'])
         for column in focus_columns:
             if match_focus(person.get(column)):
-                # person['focus'] = True
                 hits.add(person['uid'])
                 break
-    return seeds, hits
+    return hub_seed, hits
 
 
 def filter_relation(hub):
     relations = conffor.load(_RELATION_FILE)
     filted = {
-        uid: relations[uid]
+        uid: relations[str(uid)]
         for uid in hub
-        if uid in relations
+        if str(uid) in relations
     }
     return filted
 
@@ -62,11 +60,11 @@ def fill_leak(account_seed):
 
 def save_focus():
     account_seed = set(_config['account_seed'])
-    seeds, hits, picks = fill_leak(account_seed)
+    hub_seed, hits, picks = fill_leak(account_seed)
     focus = [
-        *[(uid, 'seed') for uid in seeds - hits],
-        *[(uid, 'seed/key') for uid in seeds & hits],
-        *[(uid, 'key') for uid in hits - seeds],
+        *[(uid, 'seed') for uid in hub_seed - hits],
+        *[(uid, 'seed/key') for uid in hub_seed & hits],
+        *[(uid, 'key') for uid in hits - hub_seed],
         *[(uid, 'pick') for uid in picks]
     ]
     columns = _FOCUS_USERS_COLUMNS
