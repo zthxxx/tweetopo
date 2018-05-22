@@ -18,10 +18,10 @@ def preserve_logger(handler):
 
 
 def stderr_log():
-    log = _config['log']
-    if log:
-        ensure_dir_exist(log)
-        stderr = open(log, 'a', encoding='utf-8')
+    err = _config['stderr']
+    if err:
+        ensure_dir_exist(err)
+        stderr = open(err, 'a', encoding='utf-8')
         return stderr
 
 

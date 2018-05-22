@@ -35,7 +35,8 @@ def parse_config(options):
         'account_seed': options['user'] or config['account_seed'],
         'flow': options.get('flow'),
         'daemon': options['daemon'],
-        'log': options['log']
+        'log': options['log'],
+        'stderr': options['stderr']
     }
     config.update(merge)
     hook_proxy(config, proxy, tokens)

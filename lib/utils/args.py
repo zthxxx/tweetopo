@@ -7,6 +7,7 @@ DEFAULTS = {
     'token': 'config/twitter-tokens.json',
     'proxy': 'config/proxy.json',
     'log': './output.log',
+    'stderr': './error.log',
     'daemon': False
 }
 
@@ -24,6 +25,8 @@ ops('-d', '--daemon', is_flag=True, default=DEFAULTS['daemon'],
     help='to trigger the command run in daemon')
 ops('--log', metavar='<path>', default=DEFAULTS['log'], type=click.Path(),
     help='set the output log file. Default: %s' % DEFAULTS['log'])
+ops('--stderr', metavar='<path>', default=DEFAULTS['stderr'], type=click.Path(),
+    help='set the stderr output file. Default: %s' % DEFAULTS['stderr'])
 ops('-f', '--flow', metavar='<step>', cls=FlowRange,
     help='set appoint a flow step to run. Default: all; workflows see below: \n' +
          'step\tflowname\n' +

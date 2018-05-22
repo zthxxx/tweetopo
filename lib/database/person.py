@@ -22,7 +22,9 @@ class Person(Document):
     username = StringField()
     description = StringField()
     avatar = URLField()
-    url = URLField()
+    # url URLField -> StringField
+    # avoid unicode domain or Punycode
+    url = StringField()
     sign_at = DateTimeField()
     location = StringField()
     time_zone = StringField()

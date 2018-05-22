@@ -24,8 +24,7 @@ def main():
 
 def run(as_daemon):
     if not as_daemon:
-        main()
-        return
+        return main()
     from lib.daemon import daemon
     with daemon:
         main()

@@ -143,7 +143,7 @@ def fetch_tweets_from_hub():
 
 def fetch_tweets_from_focus():
     focus = read_focus_hub()
-    uids = list(focus)
+    uids = confirm_unfound_queue(set(focus), set())
     start_fetch_tweets(tokens, uids)
 
 
